@@ -69,6 +69,7 @@ def board_api(request):
 
 # =================== other views ===================
 
+
 @ensure_csrf_cookie
 def main(request):
     # Рендерит страницу со списком досок пользователя
@@ -93,10 +94,3 @@ def board(request):
     }
 
     return render(request, template_name='board/board_page.html', context=context)
-
-@ensure_csrf_cookie
-def profile(request):
-    # Рендерит страницу профиля
-
-
-    return render(request, template_name='board/profile_page.html')
