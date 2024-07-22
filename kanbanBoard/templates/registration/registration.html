@@ -1,0 +1,23 @@
+{% extends "default.html" %}
+
+{% block title %}
+    Регистрация
+{% endblock title %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.username.label }}
+    {{ form.username }}
+
+    {{ form.email.label }}
+    {{ form.email }}
+
+    {{ form.password.label }}
+    {{ form.password }}
+
+    {{ form.send_notifications.label }}
+    {{ form.send_notifications }}
+    <input type="submit" title="Отправить" value="Save">
+</form>
+{% endblock content %}
