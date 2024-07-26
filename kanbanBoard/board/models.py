@@ -5,6 +5,7 @@ from accounts.models import User
 
 
 class Board(models.Model):
+    title = models.CharField(max_length=255)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     tasks = models.ManyToManyField("Task", blank=True)
     max_tasks = models.IntegerField()
