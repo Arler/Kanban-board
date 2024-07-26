@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 
+from accounts.models import User
+
 from .forms import TaskForm, BoardForm, ColumnForm
 from .models import Task, Board, Column
 
@@ -23,20 +25,45 @@ def task_api(request):
         
     elif request.method == 'PUT':
         task = Task.objects.get(pk=request.POST.get('id'))
-        edit_task_form = TaskForm(request.POST, instance=task)
-        if edit_task_form.is_valid():
-            # Проблема с определением объекта который нужно изменить.
-            # Можно попробовать получать id из скрытого поля, которое уже будет внутри формы, а при показе формы, javascript код, который будет
-            # подставлять id в поле, беря его из атрибута блока самого отображаемого объекта, то есть id уже будет вшит в атрибут блока
-            # который содержит в себе сам объект.
-            edit_task_form.save()
+
+        # Добавление и удаление пользователей на задачу
+        if request.POST.get('remove-user', None):
+            removed_user = User.objects.get(pk=request.POST.get('user', None)) # Должен быть id пользователя
+            if removed_user:
+                task.users.remove(User.objects.get(pk=removed_user))
+
+                return HttpResponse()
+            else:
+                return HttpResponseBadRequest('Wrong user id')
+        elif request.POST.get('add-user', None):
+            added_user = User.objects.get(pk=request.POST.get('user', None)) # Должен быть id пользователя
+            if added_user:
+                task.users.add(added_user)
+
+                return HttpResponse()
+            else:
+                return HttpResponseBadRequest('Wrong user id')
+
+        # Изменение инстанса задачи
         else:
-            return JsonResponse({'errors': edit_task_form.errors}, status=400)
+            edit_task_form = TaskForm(request.POST, instance=task)
+            if edit_task_form.is_valid():
+                # Проблема с определением объекта который нужно изменить.
+                # Можно попробовать получать id из скрытого поля, которое уже будет внутри формы, а при показе формы, javascript код, который будет
+                # подставлять id в поле, беря его из атрибута блока самого отображаемого объекта, то есть id уже будет вшит в атрибут блока
+                # который содержит в себе сам объект.
+                edit_task_form.save()
+
+                return HttpResponse()
+            else:
+                return JsonResponse({'errors': edit_task_form.errors}, status=400)
         
     elif request.method == 'DELETE':
         task = Task.objects.get(pk=json.loads(request.body)['id'])
         if task:
             task.delete()
+
+            return HttpResponse()
         else:
             return HttpResponseBadRequest('Wrong id')
 
@@ -46,6 +73,7 @@ def board_api(request):
 
         if new_board_form.is_valid():
             new_board_form.save()
+
             return HttpResponse()
         else:
             return JsonResponse({'errors': new_board_form.errors}, status=400)
@@ -58,12 +86,16 @@ def board_api(request):
             # подставлять id в поле, беря его из атрибута блока самого отображаемого объекта, то есть id уже будет вшит в атрибут блока
             # который содержит в себе сам объект.
             edit_board_form.save()
+
+            return HttpResponse()
         else:
             return JsonResponse({'errors': edit_board_form.errors}, status=400)
     elif request.method == 'DELETE':
         board = Board.objects.get(pk=json.loads(request.body)['id'])
         if board:
             board.delete()
+
+            return HttpResponse()
         else:
             return HttpResponseBadRequest('Wrong id')
         
@@ -94,6 +126,8 @@ def colimn_api(request):
         column = Column.objects.get(pk=json.loads(request.body)['id'])
         if column:
             column.delete()
+
+            return HttpResponse()
         else:
             return HttpResponseBadRequest('Wrong id')
 
