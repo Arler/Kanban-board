@@ -3,7 +3,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 
 from .forms import TaskForm, BoardForm, ColumnForm
-from .models import Task, Board
+from .models import Task, Board, Column
 
 import json
 
@@ -64,6 +64,36 @@ def board_api(request):
         board = Board.objects.get(pk=json.loads(request.body)['id'])
         if board:
             board.delete()
+        else:
+            return HttpResponseBadRequest('Wrong id')
+        
+def colimn_api(request):
+    if request.method == "POST":
+        # Создание новой колонки
+        new_column_form = ColumnForm(request.POST)
+
+        if new_column_form.is_valid():
+            new_column_form.save()
+            return HttpResponse()
+        else:
+            return JsonResponse({'errors': new_column_form.errors}, status=400)
+    elif request.method =="PUT":
+        # Редактирование существующей колонки
+        column = Column.objects.get(pk=request.POST.get('id'))
+        edit_column_form = BoardForm(request.POST, instance=column)
+        if edit_column_form.is_valid():
+            # Проблема с определением объекта который нужно изменить.
+            # Можно попробовать получать id из скрытого поля, которое уже будет внутри формы, а при показе формы, javascript код, который будет
+            # подставлять id в поле, беря его из атрибута блока самого отображаемого объекта, то есть id уже будет вшит в атрибут блока
+            # который содержит в себе сам объект.
+            edit_column_form.save()
+        else:
+            return JsonResponse({'errors': edit_column_form.errors}, status=400)
+    elif request.method == "DELETE":
+        # Удаление существующей колонки
+        column = Column.objects.get(pk=json.loads(request.body)['id'])
+        if column:
+            column.delete()
         else:
             return HttpResponseBadRequest('Wrong id')
 
