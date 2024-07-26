@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 
-from .forms import TaskForm, BoardForm
+from .forms import TaskForm, BoardForm, ColumnForm
 from .models import Task, Board
 
 import json
@@ -91,6 +91,7 @@ def board(request):
         "tasks": board.tasks,
         "board_form": BoardForm(),
         "task_form": TaskForm(),
+        "column_form": ColumnForm(),
     }
 
     return render(request, template_name='board/board_page.html', context=context)
