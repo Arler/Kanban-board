@@ -1,15 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% block title %}Главная страница{% endblock title %}
 
-    {% load static %}
+{% load static %}
 
-    <title>Главная страница</title>
-</head>
-<body>
-    <button class="test">КНОПКА</button>
+{% block link_css %} <link rel="stylesheet" href={% static "css/board/main_page.css" %}> {% endblock link_css %}
+
+{% block action_button_content %}Создать новую доску{% endblock action_button_content %}
+
+{% block content %}
+    {% if boards %}
+        <div class="container">
+            {% for board in boards %}
+                <div class="board">
+                    <div class="board__title">{{ board.title }}</div>
+                    <div class="board__info">
+                        <div class="board__info-item">{{ board.max_tasks }}</div>
+                        <div class="board__info-item">{{ board.columns }}</div>
+                        <div class="board__info-item"><!-- Реализовать отправку количества пользователей на доске --></div>
+                    </div>
+                    <div class="board__buttons">
+                        <div class="board__button board__button_select">Выбрать</div>
+                        <div class="board__button board__button_edit">Редактировать</div>
+                        <div class="board__button board__button_delete">Удалить</div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     <script src="{% static 'js/script.js' %}"></script>
-</body>
-</html>
+{% endblock content %}
