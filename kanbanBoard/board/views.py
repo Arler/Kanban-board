@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
+from django.db.models import Count
 
 from accounts.models import User
 
@@ -137,10 +138,10 @@ def colimn_api(request):
 @ensure_csrf_cookie
 def main(request):
     # Рендерит страницу со списком досок пользователя
-    user_board_querydict = Board.objects.filter(owner=request.user)
+    user_boards_querydict = Board.objects.filter(owner=request.user).annotate(total_users=Count('tasks__users', distinct=True))
 
     context = {
-        "boards": user_board_querydict,
+        "boards": user_boards_querydict,
         "board_form": BoardForm()
         }
 
@@ -159,3 +160,5 @@ def board(request):
     }
 
     return render(request, template_name='board/board_page.html', context=context)
+
+

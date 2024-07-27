@@ -13,9 +13,9 @@
                 <div class="board">
                     <div class="board__title">{{ board.title }}</div>
                     <div class="board__info">
-                        <div class="board__info-item">{{ board.max_tasks }}</div>
-                        <div class="board__info-item">{{ board.columns }}</div>
-                        <div class="board__info-item"><!-- Реализовать отправку количества пользователей на доске --></div>
+                        <div class="board__info-item">{{ board.max_tasks|length }}</div>
+                        <div class="board__info-item">{{ board.columns|length }}</div>
+                        <div class="board__info-item">{{ board.total_users }}</div>
                     </div>
                     <div class="board__buttons">
                         <div class="board__button board__button_select">Выбрать</div>

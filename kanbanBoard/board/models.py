@@ -5,15 +5,15 @@ from accounts.models import User
 
 
 class Board(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, default="Новая доска")
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     tasks = models.ManyToManyField("Task", blank=True)
     max_tasks = models.IntegerField()
-    columns = models.ManyToManyField("Column")
+    columns = models.ManyToManyField("Column", blank=True)
 
 
 class Task(models.Model):
-    title = models.CharField(max_length=255)
+    title = models.CharField(max_length=255, default="Новая задача")
     date_created = models.DateField(auto_now_add=True)
     deadline = models.DateField(blank=True)
     users = models.ManyToManyField(User, blank=True)
