@@ -1,10 +1,12 @@
+{% extends "default.html" %}
+
 {% block title %}Главная страница{% endblock title %}
 
 {% load static %}
 
-{% block link_css %} <link rel="stylesheet" href={% static "css/board/main_page.css" %}> {% endblock link_css %}
+{% block link_css %} <link rel="stylesheet" href="{% static 'css/board/main_page.css' %}"> {% endblock link_css %}
 
-{% block action_button_content %}Создать новую доску{% endblock action_button_content %}
+{% block action_button_content %}<a class="new-board" href="">Создать новую доску</a>{% endblock action_button_content %}
 
 {% block content %}
     {% if boards %}
@@ -13,18 +15,18 @@
                 <div class="board">
                     <div class="board__title">{{ board.title }}</div>
                     <div class="board__info">
-                        <div class="board__info-item">{{ board.max_tasks|length }}</div>
-                        <div class="board__info-item">{{ board.columns|length }}</div>
-                        <div class="board__info-item">{{ board.total_users }}</div>
+                        <span class="board__info_item">Количество задач: {{ board.max_tasks|length }}</span>
+                        <span class="board__info_item">Количество стадий: {{ board.columns|length }}</span>
+                        <span class="board__info_item">Пользователи: {{ board.total_users }}</span>
                     </div>
                     <div class="board__buttons">
-                        <div class="board__button board__button_select">Выбрать</div>
-                        <div class="board__button board__button_edit">Редактировать</div>
-                        <div class="board__button board__button_delete">Удалить</div>
+                        <button class="board__button board__button_select">Выбрать</button>
+                        <button class="board__button board__button_edit">Редактировать</button>
+                        <button class="board__button board__button_delete">Удалить</button>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% endif %}
-    <script src="{% static 'js/script.js' %}"></script>
+    {% comment %} <script src="{% static 'js/script.js' %}"></script> {% endcomment %}
 {% endblock content %}
