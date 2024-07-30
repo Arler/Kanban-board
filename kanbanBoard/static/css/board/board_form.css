@@ -1,0 +1,106 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+:focus:active {
+  outline: none;
+}
+
+a:focus, a:active:focus {
+  outline: none;
+}
+
+nav, footer, header, aside {
+  display: block;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-size: 100%;
+  line-height: 1;
+  font-size: 14px;
+  -ms-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  webkit-text-size-adjust: 100%;
+}
+
+input, button, textarea {
+  font-family: inherit;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+button::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+a, a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+ul, li {
+  list-style: none;
+}
+
+img {
+  vertical-align: top;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 400;
+  font-size: inherit;
+}
+
+.board-form {
+  width: 450px;
+  height: 142px;
+  background: #f5f5f5;
+  padding: 10px;
+  display: flex;
+}
+.board-form__forms {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.board-form__forms input {
+  width: 280px;
+  height: 50px;
+}
+.board-form__labels {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.board-form__label-wrap {
+  width: 150px;
+  height: 52px;
+  background: #c8e6c9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #f5f5f5;
+  font-family: "Alexandria", sans-serif;
+  font-size: 18px;
+}
+.board-form__label-wrap:last-child {
+  padding-left: 22px;
+}
