@@ -138,14 +138,14 @@ def colimn_api(request):
 @ensure_csrf_cookie
 def main(request):
     # Рендерит страницу со списком досок пользователя
-    user_boards_querydict = Board.objects.filter(owner=request.user).annotate(total_users=Count('tasks__users', distinct=True))
+    user_boards_queryset = Board.objects.filter(owner=request.user).annotate(total_users=Count('tasks__users', distinct=True))
 
     context = {
-        "boards": user_boards_querydict,
-        "board_form": BoardForm()
+        "boards": user_boards_queryset,
+        "board_form": BoardForm(),
         }
 
-    return render(request, template_name='board/main_page', context=context)
+    return render(request, template_name='board/main_page.html', context=context)
 
 @ensure_csrf_cookie
 def board(request):
@@ -153,7 +153,7 @@ def board(request):
     board = Board.objects.filter(owner=request.user)
     
     context = {
-        "tasks": board.tasks,
+        "tasks": board.tasks.all(),
         "board_form": BoardForm(),
         "task_form": TaskForm(),
         "column_form": ColumnForm(),
