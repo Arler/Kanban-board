@@ -1,29 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    {% load static %}
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% block link_css %}
-        <link rel="stylesheet" href={% static "css/default.css" %}>
+        <link rel="stylesheet" href="{% static 'css/default.css' %}">
     {% endblock link_css %}
-
-    {% load static %}
-
     <title>{% block title %}Kanban доска{% endblock title %}</title>
 </head>
 <body>
-    <header>
-        <div class="action-button-wrapper">
+    <header class="header">
+        <div class="header__wrapper">
             <div class="action-button">
                 {% block action_button_content %}{% endblock action_button_content %}
             </div>
+            <nav class="nav">
+                <a class="nav__link" href="{% url 'profile_page' %}">Профиль</a>
+                <a class="nav__link" href="{% url 'main_page' %}">Главная</a>
+            </nav>
         </div>
-        <nav>
-            <div class="container">
-                <div class="navigation-text">Профиль</div>
-                <div class="navigation-text">Главная</div>
-            </div>
-        </nav>
     </header>
     {% block content %}
     {% endblock content %}
