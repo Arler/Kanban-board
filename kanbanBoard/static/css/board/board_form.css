@@ -70,6 +70,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .board-form {
+  visibility: hidden;
   width: 450px;
   height: 142px;
   background: #f5f5f5;
@@ -103,4 +104,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 .board-form__label-wrap:last-child {
   padding-left: 22px;
+}
+
+.active {
+  visibility: visible;
 }

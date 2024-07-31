@@ -1,6 +1,7 @@
 @import '/home/arler/Projects/Kanban board/kanbanBoard/static/css/nullstyle.scss';
 
 .board-form {
+    visibility: hidden;
     width: 450px;
     height: 142px;
     background: #f5f5f5;
@@ -39,3 +40,6 @@
     }
 }
 
+.active {
+    visibility: visible;
+}
