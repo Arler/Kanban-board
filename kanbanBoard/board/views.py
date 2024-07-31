@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.db.models import Count
+from django.conf import settings
 
 from accounts.models import User
 
@@ -9,6 +10,7 @@ from .forms import TaskForm, BoardForm, ColumnForm
 from .models import Task, Board, Column
 
 import json
+import os
 
 
 # ==================== board api ====================
@@ -137,6 +139,11 @@ def colimn_api(request):
 
 @ensure_csrf_cookie
 def main(request):
+    if request.headers.get('X-get-form', None):
+        html_file = open(os.path.join(settings.TEMPLATES[0]['DIRS'][0], 'board', 'board_form.html'), 'r')
+        
+        return HttpResponse(html_file.read(), content_type='text/html')
+
     # Рендерит страницу со списком досок пользователя
     user_boards_queryset = Board.objects.filter(owner=request.user).annotate(total_users=Count('tasks__users', distinct=True))
 
