@@ -12,7 +12,7 @@
     {% if boards %}
         <div class="container">
             {% for board in boards %}
-                <div class="board" value="{{ board.id }}">
+                <div class="board" id="{{ board.id }}">
                     <div class="board__title">{{ board.title }}</div>
                     <div class="board__info">
                         <span class="board__info_item">Количество задач: {{ board.max_tasks|length }}</span>
