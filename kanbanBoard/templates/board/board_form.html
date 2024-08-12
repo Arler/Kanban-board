@@ -1,15 +1,16 @@
-<div class="board-form" value="">
-    <div class="board-form__labels">
+<form class="board-form" value="">
+    <div class="board-form__label-line">
         <div class="board-form__label-wrap">
             <label for="board-name">Название</label>
         </div>
-        <div class="board-form__label-wrap">
+        <input type="text" id="board-name">
+    </div>
+    <div class="board-form__label-line">
+        <div class="board-form__label-wrap board-form__label-wrap_max-count">
             <label for="board-max-tasks">Макс кол-во задач</label>
         </div>
-    </div>
-    <form class="board-form__forms">
-        <input type="hidden" name="board-id" value="">
-        <input type="text" id="board-name">
         <input type="number" id="board-max-tasks">
-    </form>
-</div>
+    </div>
+    <input type="hidden" name="board-id" value="">
+    <button class="board-form__button" type="submit">Сохранить</button>
+</form>
