@@ -16,29 +16,24 @@ function getCookie(name) {
 
 const csrftoken = getCookie('csrftoken');
 
-// function requestTest() {
-//     var init = {
-//         method: 'DELETE',
-//         headers: {'X-CSRFToken': csrftoken},
-//         body: JSON.stringify({'id': 6}),
-//     }
-//     fetch('http://127.0.0.1:8000/board/api/task', init)
-//     .then(response => {
-//         if (!response.ok) throw new Error('Что-то не так')
-//         return response.text();
-//     })
-//     .then(data => {console.log(data)})
-//     .catch(error => {console.log(error)})
-// }
-
-
-// let button = document.querySelector('.test')
-// button.addEventListener('click', requestTest)
-
-// Принцип работы всплывающих форм
-// При нажатии на кнопку, после которой должна вылезти форма, сначала отправляется ajax запрос на html код формы
-// Далее полученный html код формы вставляется в DOM с применением стилей и остаётся там пока пользователь не 
-// нажмёт снова на кнопку редактирования.
+function get_board_form() {
+    let init = {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'X-get-form': true,
+        },
+    }
+    fetch('http://127.0.0.1:8000/', init)
+    .then(response => {
+        if (!response.ok) throw new Error('Что-то не так')
+        return response.text()
+    })
+    .then(html => {
+        sessionStorage.setItem('board-form', html)
+    })
+    .catch(error => {console.log(error)})
+}
 
 function hideForm() {
     let = activeForm = document.querySelector('.active')
@@ -47,7 +42,7 @@ function hideForm() {
     }
 }
 
-function setup_form(formElement, boardElement) {
+function setup_form_nearby_board(formElement, boardElement) {
     let boardRect = boardElement.getBoundingClientRect()
     let formRect = formElement.getBoundingClientRect()
 
@@ -63,67 +58,99 @@ function setup_form(formElement, boardElement) {
     }
 }
 
-function get_board_form(event) {
-    if (event.target.classList.contains('board__button_edit')) {
-        let not_forms = document.querySelector('.board-form') == null
-        let htmlBoardForm = sessionStorage.getItem('board-form')
-        let board = event.target.parentElement.parentElement
-        let boardForm = document.querySelector(`.board-form[value="${board.getAttribute('id')}"]`)
+function setup_form_nearby_header(formElement, headerElement) {
+    let headerRect = headerElement.getBoundingClientRect()
 
-        if (not_forms) {
-            let init = {
-                method: 'GET',
-                headers: {
-                    'X-CSRFToken': csrftoken,
-                    'X-get-form': true,
-                },
-            }
-            fetch('http://127.0.0.1:8000/', init)
-            .then(response => {
-                if (!response.ok) throw new Error('Что-то не так')
-                return response.text()
-            })
-            .then(html => {
-                sessionStorage.setItem('board-form', html)
-                document.head.insertAdjacentHTML('afterend', `<link rel="stylesheet" href="static/css/board/board_form.css">`)
-                board.insertAdjacentHTML('afterend', html)
+    formElement.style.position = 'fixed'
+    formElement.style.top = `${headerRect.bottom}px`
+}
 
-                let boardForm = document.querySelector(`.board-form`)
-                setup_form(boardForm, board)
+function show_new_board_form() {
+    let newBoardForm = document.querySelector('.board-form[name="new-board-form"]')
 
-                boardForm.classList.toggle('active')
-            })
-            .catch(error => {console.log(error)})
+    if (newBoardForm) {
+        if (newBoardForm.classList.contains('active')) {
+            newBoardForm.classList.remove('active')
         }
-        else if (boardForm) {
-
-            if (boardForm.classList.contains('active')) {
-                boardForm.classList.remove('active')
-            }
-            else if (!boardForm.classList.contains('active')) {
-                hideForm()
-                boardForm.classList.toggle('active')
-            }
-        }
-        else {
-            board.insertAdjacentHTML('afterend', htmlBoardForm)
-            let boardForm = document.querySelector(`.board-form[value=""]`)
-
+        else if (!newBoardForm.classList.contains('active')) {
             hideForm()
-
-            setup_form(boardForm, board)
-
-            boardForm.classList.toggle('active')
+            newBoardForm.classList.toggle('active')
         }
+    }
+    else {
+        let header = document.querySelector('.header')
+        header.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
+    
+        let newBoardForm = document.querySelector(`.board-form[value=""]`)
+        newBoardForm.setAttribute('name', 'new-board-form')
+        setup_form_nearby_header(newBoardForm, header)
+    
+        newBoardForm.classList.toggle('active')
     }
 }
 
-document.addEventListener('click', get_board_form)
+function show_board_edit_form(event) {
+    let board = event.target.parentElement.parentElement
+    let boardForm = document.querySelector(`.board-form[value="${board.getAttribute('id')}"]`)
 
-// Проблема отображения уже вставленной формы.
-// Если досок будет несколько, то при нажатии редактирования у другой доски, форма отобразится у доски, у которой она была вызвана в первый
-// раз.
-// Можно сохранить скачанную форму в кэш, а уже потом, когда у конкретной доски будет вызвано редактирование, форма будет вставлена рядом с
-// с ней, и по необходимости будет исчезать или появлятся путём активации класса active. При всём этом будет проверка на то, чтобы 
-// отображалась только одна форма на странице 
+    if (boardForm) {
 
+        if (boardForm.classList.contains('active')) {
+            boardForm.classList.remove('active')
+        }
+        else if (!boardForm.classList.contains('active')) {
+            hideForm()
+            boardForm.classList.toggle('active')
+        }
+    }
+    else {
+        board.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
+        let boardForm = document.querySelector(`.board-form[value=""]`)
+
+        setup_form_nearby_board(boardForm, board)
+
+        boardForm.classList.toggle('active')
+    }
+}
+
+function active_board_form(event) {
+    if (event.target.classList.contains('board__button_edit')) {
+        show_board_edit_form(event)
+    }
+    else if (event.target.classList.contains('new-board')) {
+        show_new_board_form()
+        console.log('kek')
+    }
+}
+
+function show_board_form(event) {
+    let not_forms = sessionStorage.getItem('board-form') == null
+    let boardFormStyle = document.querySelector('.board-style')
+
+    if (!boardFormStyle) {
+        document.head.insertAdjacentHTML('beforeend', `<link class="board-style" rel="stylesheet" href="static/css/board/board_form.css">`)
+    }
+    if (not_forms) {
+        get_board_form()
+        active_board_form(event)
+    }
+    else {
+        active_board_form(event)
+    }
+}
+
+document.addEventListener('click', show_board_form)
+
+
+// Функция отправки формы
+function sendForm(event) {
+    event.preventDefault()
+    let init = {
+        method: "POST",
+        'X-CSRFToken': csrftoken,
+    }
+    
+}
+
+// Отслеживание события отправки формы
+document.addEventListener("submit", sendForm)
