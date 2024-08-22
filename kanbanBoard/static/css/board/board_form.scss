@@ -9,6 +9,7 @@
     display: flex;
     justify-content: space-between;
     flex-direction: column;
+    z-index: 10;
 
     input {
         margin-bottom: 10px;

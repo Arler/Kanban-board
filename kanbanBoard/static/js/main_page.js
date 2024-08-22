@@ -45,23 +45,24 @@ function hideForm() {
 function setup_form_nearby_board(formElement, boardElement) {
     let boardRect = boardElement.getBoundingClientRect()
     let formRect = formElement.getBoundingClientRect()
+    let containerRect = boardElement.parentElement.getBoundingClientRect()
 
     formElement.setAttribute('value', boardElement.getAttribute('id'))
-    formElement.style.position = 'fixed'
-    formElement.style.top = `${boardRect.top}px`
+    formElement.style.position = 'absolute'
+    formElement.style.top = `${boardRect.top - containerRect.top}px`
 
     if (boardRect.right + formRect.width > document.documentElement.clientWidth) {
-        formElement.style.right = `${document.documentElement.clientWidth - boardRect.left}px`
+        formElement.style.right = `${containerRect.right - boardRect.left}px`
     }
     else {
-        formElement.style.left = `${boardRect.right}px`
+        formElement.style.left = `${boardRect.right - containerRect.left}px`
     }
 }
 
 function setup_form_nearby_header(formElement, headerElement) {
     let headerRect = headerElement.getBoundingClientRect()
 
-    formElement.style.position = 'fixed'
+    formElement.style.position = 'absolute'
     formElement.style.top = `${headerRect.bottom}px`
 }
 
@@ -78,11 +79,14 @@ function show_new_board_form() {
         }
     }
     else {
+        hideForm()
+        
         let header = document.querySelector('.header')
         header.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
     
         let newBoardForm = document.querySelector(`.board-form[value=""]`)
         newBoardForm.setAttribute('name', 'new-board-form')
+        newBoardForm.setAttribute('value', 'new')
         setup_form_nearby_header(newBoardForm, header)
     
         newBoardForm.classList.toggle('active')
@@ -94,7 +98,6 @@ function show_board_edit_form(event) {
     let boardForm = document.querySelector(`.board-form[value="${board.getAttribute('id')}"]`)
 
     if (boardForm) {
-
         if (boardForm.classList.contains('active')) {
             boardForm.classList.remove('active')
         }
@@ -104,6 +107,8 @@ function show_board_edit_form(event) {
         }
     }
     else {
+        hideForm()
+
         board.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
         let boardForm = document.querySelector(`.board-form[value=""]`)
 
@@ -119,7 +124,6 @@ function active_board_form(event) {
     }
     else if (event.target.classList.contains('new-board')) {
         show_new_board_form()
-        console.log('kek')
     }
 }
 
