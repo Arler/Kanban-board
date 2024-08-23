@@ -14,9 +14,9 @@ function getCookie(name) {
     return cookieValue;
 }
 
-const csrftoken = getCookie('csrftoken');
-
 function get_board_form() {
+    const csrftoken = getCookie('csrftoken');
+
     let init = {
         method: 'GET',
         headers: {
@@ -47,7 +47,9 @@ function setup_form_nearby_board(formElement, boardElement) {
     let formRect = formElement.getBoundingClientRect()
     let containerRect = boardElement.parentElement.getBoundingClientRect()
 
+    formElement.querySelector('input[name="id"]').setAttribute('value', boardElement.getAttribute('id'))
     formElement.setAttribute('value', boardElement.getAttribute('id'))
+
     formElement.style.position = 'absolute'
     formElement.style.top = `${boardRect.top - containerRect.top}px`
 
@@ -128,7 +130,7 @@ function active_board_form(event) {
 }
 
 function show_board_form(event) {
-    let not_forms = sessionStorage.getItem('board-form') == null
+    let not_forms = document.querySelector('.board-form') == null
     let boardFormStyle = document.querySelector('.board-style')
 
     if (!boardFormStyle) {
@@ -145,15 +147,37 @@ function show_board_form(event) {
 
 document.addEventListener('click', show_board_form)
 
+function updateBoard(data) {
+    let board = document.querySelector(`.board[id="${data.pk}"]`)
+
+    board.querySelector('.board__title').innerHTML = data.fields.title
+    board.querySelector('.board__info_item_tasks').innerHTML = data.fields.tasks.length
+    board.querySelector('.board__info_item_columns').innerHTML = data.fields.columns.length
+    board.querySelector('.board__info_item_total-users').innerHTML = data.fields.total_users
+}
 
 // Функция отправки формы
 function sendForm(event) {
+    const csrftoken = getCookie('csrftoken');
+
     event.preventDefault()
+
     let init = {
-        method: "POST",
-        'X-CSRFToken': csrftoken,
+        method: "PUT",
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(Object.fromEntries(new FormData(event.target)))
     }
-    
+
+    fetch('http://127.0.0.1:8000/board/api/board/', init)
+    .then(response => {
+        if (!response.ok) throw new Error('Что-то не так')
+        return response.json()
+    })
+    .then(data => {updateBoard(data[0])})
+    .catch(error => {console.log(error)})
 }
 
 // Отслеживание события отправки формы
