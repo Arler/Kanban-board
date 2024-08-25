@@ -42,6 +42,7 @@ function hideForm() {
     }
 }
 
+// Функция установки формы изменения доски рядом с доской
 function setup_form_nearby_board(formElement, boardElement) {
     let boardRect = boardElement.getBoundingClientRect()
     let formRect = formElement.getBoundingClientRect()
@@ -61,15 +62,17 @@ function setup_form_nearby_board(formElement, boardElement) {
     }
 }
 
+// Функция установки формы для создания новой доски рядом с header
 function setup_form_nearby_header(formElement, headerElement) {
     let headerRect = headerElement.getBoundingClientRect()
 
     formElement.style.position = 'absolute'
     formElement.style.top = `${headerRect.bottom}px`
+    formElement.setAttribute('name', 'new-board')
 }
 
 function show_new_board_form() {
-    let newBoardForm = document.querySelector('.board-form[name="new-board-form"]')
+    let newBoardForm = document.querySelector('.board-form[name="new-board"]')
 
     if (newBoardForm) {
         if (newBoardForm.classList.contains('active')) {
@@ -106,6 +109,7 @@ function show_board_edit_form(event) {
         else if (!boardForm.classList.contains('active')) {
             hideForm()
             boardForm.classList.toggle('active')
+            setup_form_nearby_board(boardForm, board)
         }
     }
     else {
@@ -120,33 +124,71 @@ function show_board_edit_form(event) {
     }
 }
 
-function active_board_form(event) {
-    if (event.target.classList.contains('board__button_edit')) {
-        show_board_edit_form(event)
+function deleteBoard(event) {
+    const csrftoken = getCookie('csrftoken');
+    let board = event.target.parentElement.parentElement
+    let board_id = board.getAttribute('id')
+
+    let init = {
+        method: "DELETE",
+        headers: {
+            'X-CSRFToken': csrftoken,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(
+            {'id': board_id}
+        )
+    }
+
+    fetch('http://127.0.0.1:8000/board/api/board/', init)
+    .then(response => {
+        if (!response.ok) throw new Error('Что-то не так')
+        return response
+    })
+    .then(data => {
+        board.remove()
+        document.querySelector(`.board-form[value="${board.getAttribute('id')}"]`).remove()
+    })
+    .catch(error => {console.log(error)})
+}
+
+// Функция обработки нажатия кнопок
+function buttonResponse(event) {
+    if (event.target.classList.contains('board__button')) {
+        if (event.target.classList.contains('board__button_edit')) {
+            let not_forms = document.querySelector('.board-form') == null
+            let boardFormStyle = document.querySelector('.board-style')
+
+            if (!boardFormStyle) {
+                document.head.insertAdjacentHTML('beforeend', `<link class="board-style" rel="stylesheet" href="static/css/board/board_form.css">`)
+            }
+            if (not_forms) {
+                get_board_form()
+                show_board_edit_form(event)
+            }
+            else {
+                show_board_edit_form(event)
+            }
+        }
+        else if (event.target.classList.contains('board__button_delete')) {
+            deleteBoard(event)
+        }
     }
     else if (event.target.classList.contains('new-board')) {
+        let boardFormStyle = document.querySelector('.board-style')
+
+        if (!boardFormStyle) {
+            document.head.insertAdjacentHTML('beforeend', `<link class="board-style" rel="stylesheet" href="static/css/board/board_form.css">`)
+        }
+
         show_new_board_form()
     }
 }
 
-function show_board_form(event) {
-    let not_forms = document.querySelector('.board-form') == null
-    let boardFormStyle = document.querySelector('.board-style')
+// Отслеживание события клика по кнопкам
+document.addEventListener('click', buttonResponse)
 
-    if (!boardFormStyle) {
-        document.head.insertAdjacentHTML('beforeend', `<link class="board-style" rel="stylesheet" href="static/css/board/board_form.css">`)
-    }
-    if (not_forms) {
-        get_board_form()
-        active_board_form(event)
-    }
-    else {
-        active_board_form(event)
-    }
-}
-
-document.addEventListener('click', show_board_form)
-
+// Функция обновления данных доски
 function updateBoard(data) {
     let board = document.querySelector(`.board[id="${data.pk}"]`)
 
@@ -156,28 +198,62 @@ function updateBoard(data) {
     board.querySelector('.board__info_item_total-users').innerHTML = data.fields.total_users
 }
 
+// Функция добавления новой доски на страницу
+function add_new_board(data) {
+    new_board = document.querySelector('.board').cloneNode(true)
+
+    new_board.setAttribute('id', data.pk)
+    new_board.querySelector('.board__title').innerHTML = data.fields.title
+    new_board.querySelector('.board__info_item_tasks').innerHTML = data.fields.tasks.length
+    new_board.querySelector('.board__info_item_columns').innerHTML = data.fields.columns.length
+    new_board.querySelector('.board__info_item_total-users').innerHTML = data.fields.total_users
+
+    document.querySelector('.container').appendChild(new_board)
+}
+
 // Функция отправки формы
 function sendForm(event) {
+    let form = event.target
     const csrftoken = getCookie('csrftoken');
 
     event.preventDefault()
 
-    let init = {
-        method: "PUT",
-        headers: {
-            'X-CSRFToken': csrftoken,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(Object.fromEntries(new FormData(event.target)))
-    }
+    if (form.getAttribute('name') == 'new-board') {
+        let init = {
+            method: "POST",
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        }
 
-    fetch('http://127.0.0.1:8000/board/api/board/', init)
-    .then(response => {
-        if (!response.ok) throw new Error('Что-то не так')
-        return response.json()
-    })
-    .then(data => {updateBoard(data[0])})
-    .catch(error => {console.log(error)})
+        fetch('http://127.0.0.1:8000/board/api/board/', init)
+        .then(response => {
+            if (!response.ok) throw new Error('Что-то не так')
+            return response.json()
+        })
+        .then(data => {add_new_board(data[0])})
+        .catch(error => {console.log(error)})
+    }
+    else {
+        let init = {
+            method: "PUT",
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        }
+
+        fetch('http://127.0.0.1:8000/board/api/board/', init)
+        .then(response => {
+            if (!response.ok) throw new Error('Что-то не так')
+            return response.json()
+        })
+        .then(data => {updateBoard(data[0])})
+        .catch(error => {console.log(error)})
+    }
 }
 
 // Отслеживание события отправки формы
