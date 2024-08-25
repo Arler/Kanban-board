@@ -74,11 +74,13 @@ def task_api(request):
 def board_api(request):
     data = json.loads(request.body.decode('utf-8'))
     if request.method == 'POST':
+        data['owner'] = request.user.id
         new_board_form = BoardForm(data)
 
         if new_board_form.is_valid():
             new_board = new_board_form.save()
             new_board = json.loads(serialize('json', [new_board]))
+            new_board[0]['fields']['total_users'] = User.objects.filter(task__board__id=new_board[0]['pk']).distinct().count()
 
             return JsonResponse(new_board, safe=False)
         else:
