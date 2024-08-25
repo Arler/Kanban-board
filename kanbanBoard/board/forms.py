@@ -3,8 +3,6 @@ from .models import Board, Column, Task
 
 
 class BoardForm(forms.ModelForm):
-    number_columns = forms.IntegerField()
-
     class Meta:
         model = Board
         fields = '__all__'

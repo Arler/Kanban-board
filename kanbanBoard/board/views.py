@@ -3,6 +3,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.db.models import Count
 from django.conf import settings
+from django.core.serializers import serialize
 
 from accounts.models import User
 
@@ -17,29 +18,32 @@ import os
 
 
 def task_api(request):
+    data = json.loads(request.body.decode('utf-8'))
     if request.method == 'POST':
-        new_task_form = TaskForm(request.POST)
+        new_task_form = TaskForm(data)
 
         if new_task_form.is_valid():
-            new_task_form.save()
-            return HttpResponse()
+            new_task = new_task_form.save()
+            new_task = json.loads(serialize('json', [new_task]))
+
+            return JsonResponse(new_task, safe=False)
         else:
             return JsonResponse({'errors': new_task_form.errors}, status=400)
         
     elif request.method == 'PUT':
-        task = Task.objects.get(pk=request.POST.get('id'))
+        task = Task.objects.get(pk=data.get('id', None))
 
         # Добавление и удаление пользователей на задачу
-        if request.POST.get('remove-user', None):
-            removed_user = User.objects.get(pk=request.POST.get('user', None)) # Должен быть id пользователя
+        if data.get('remove-user', None):
+            removed_user = User.objects.get(pk=data.get('user', None)) # Должен быть id пользователя
             if removed_user:
                 task.users.remove(User.objects.get(pk=removed_user))
 
                 return HttpResponse()
             else:
                 return HttpResponseBadRequest('Wrong user id')
-        elif request.POST.get('add-user', None):
-            added_user = User.objects.get(pk=request.POST.get('user', None)) # Должен быть id пользователя
+        elif data.get('add-user', None):
+            added_user = User.objects.get(pk=data.get('user', None)) # Должен быть id пользователя
             if added_user:
                 task.users.add(added_user)
 
@@ -49,20 +53,17 @@ def task_api(request):
 
         # Изменение инстанса задачи
         else:
-            edit_task_form = TaskForm(request.POST, instance=task)
+            edit_task_form = TaskForm(data, instance=task)
             if edit_task_form.is_valid():
-                # Проблема с определением объекта который нужно изменить.
-                # Можно попробовать получать id из скрытого поля, которое уже будет внутри формы, а при показе формы, javascript код, который будет
-                # подставлять id в поле, беря его из атрибута блока самого отображаемого объекта, то есть id уже будет вшит в атрибут блока
-                # который содержит в себе сам объект.
-                edit_task_form.save()
+                updated_task = edit_task_form.save()
+                updated_task = json.loads(serialize('json', [updated_task]))
 
-                return HttpResponse()
+                return JsonResponse(updated_task, safe=False)
             else:
                 return JsonResponse({'errors': edit_task_form.errors}, status=400)
         
     elif request.method == 'DELETE':
-        task = Task.objects.get(pk=json.loads(request.body)['id'])
+        task = Task.objects.get(pk=data.get('id', None))
         if task:
             task.delete()
 
@@ -71,30 +72,32 @@ def task_api(request):
             return HttpResponseBadRequest('Wrong id')
 
 def board_api(request):
+    data = json.loads(request.body.decode('utf-8'))
     if request.method == 'POST':
-        new_board_form = BoardForm(request.POST)
+        new_board_form = BoardForm(data)
 
         if new_board_form.is_valid():
-            new_board_form.save()
+            new_board = new_board_form.save()
+            new_board = json.loads(serialize('json', [new_board]))
 
-            return HttpResponse()
+            return JsonResponse(new_board, safe=False)
         else:
             return JsonResponse({'errors': new_board_form.errors}, status=400)
     elif request.method == 'PUT':
-        board = Board.objects.get(pk=request.POST.get('id'))
-        edit_board_form = BoardForm(request.POST, instance=board)
-        if edit_board_form.is_valid():
-            # Проблема с определением объекта который нужно изменить.
-            # Можно попробовать получать id из скрытого поля, которое уже будет внутри формы, а при показе формы, javascript код, который будет
-            # подставлять id в поле, беря его из атрибута блока самого отображаемого объекта, то есть id уже будет вшит в атрибут блока
-            # который содержит в себе сам объект.
-            edit_board_form.save()
+        data['owner'] = request.user.id
 
-            return HttpResponse()
+        board = Board.objects.get(pk=data.get('id'))
+        edit_board_form = BoardForm(data, instance=board)
+        if edit_board_form.is_valid():
+            edit_board_form.save()
+            updated_board = json.loads(serialize('json', [board]))
+            updated_board[0]['fields']['total_users'] = User.objects.filter(task__board__id=board.pk).distinct().count()
+
+            return JsonResponse(updated_board, safe=False)
         else:
             return JsonResponse({'errors': edit_board_form.errors}, status=400)
     elif request.method == 'DELETE':
-        board = Board.objects.get(pk=json.loads(request.body)['id'])
+        board = Board.objects.get(pk=data.get('id', None))
         if board:
             board.delete()
 
@@ -103,30 +106,29 @@ def board_api(request):
             return HttpResponseBadRequest('Wrong id')
         
 def colimn_api(request):
+    data = json.loads(request.body.decode('utf-8'))
     if request.method == "POST":
         # Создание новой колонки
-        new_column_form = ColumnForm(request.POST)
+        new_column_form = ColumnForm(data)
 
         if new_column_form.is_valid():
-            new_column_form.save()
-            return HttpResponse()
+            new_column = new_column_form.save()
+            new_column = json.loads(serialize('json', [new_column]))
+            return JsonResponse(new_column, safe=False)
         else:
             return JsonResponse({'errors': new_column_form.errors}, status=400)
     elif request.method =="PUT":
         # Редактирование существующей колонки
-        column = Column.objects.get(pk=request.POST.get('id'))
-        edit_column_form = BoardForm(request.POST, instance=column)
+        column = Column.objects.get(pk=data.get('id', None))
+        edit_column_form = BoardForm(data, instance=column)
         if edit_column_form.is_valid():
-            # Проблема с определением объекта который нужно изменить.
-            # Можно попробовать получать id из скрытого поля, которое уже будет внутри формы, а при показе формы, javascript код, который будет
-            # подставлять id в поле, беря его из атрибута блока самого отображаемого объекта, то есть id уже будет вшит в атрибут блока
-            # который содержит в себе сам объект.
-            edit_column_form.save()
+            updated_column = edit_column_form.save()
+            updated_column = json.loads(serialize('json', [updated_column]))
         else:
             return JsonResponse({'errors': edit_column_form.errors}, status=400)
     elif request.method == "DELETE":
         # Удаление существующей колонки
-        column = Column.objects.get(pk=json.loads(request.body)['id'])
+        column = Column.objects.get(pk=data.get('id', None))
         if column:
             column.delete()
 
