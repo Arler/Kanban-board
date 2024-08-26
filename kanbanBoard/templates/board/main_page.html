@@ -12,19 +12,7 @@
     {% if boards %}
         <div class="container">
             {% for board in boards %}
-                <div class="board" id="{{ board.id }}">
-                    <div class="board__title">{{ board.title }}</div>
-                    <div class="board__info">
-                        <span class="board__info_item">Количество задач: <span class="board__info_item_tasks">{{ board.tasks|length }}</span></span>
-                        <span class="board__info_item">Количество стадий: <span class="board__info_item_columns">{{ board.columns|length }}</span></span>
-                        <span class="board__info_item">Пользователи: <span class="board__info_item_total-users">{{ board.total_users }}</span></span>
-                    </div>
-                    <div class="board__buttons">
-                        <button class="board__button board__button_select">Выбрать</button>
-                        <button class="board__button board__button_edit">Редактировать</button>
-                        <button class="board__button board__button_delete">Удалить</button>
-                    </div>
-                </div>
+                {% include "board/board.html" %}
             {% endfor %}
         </div>
     {% endif %}

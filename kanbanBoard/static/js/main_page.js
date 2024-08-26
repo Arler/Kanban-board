@@ -71,6 +71,7 @@ function setup_form_nearby_header(formElement, headerElement) {
     formElement.setAttribute('name', 'new-board')
 }
 
+// Функция для показа или вставки формы создания новой доски
 function show_new_board_form() {
     let newBoardForm = document.querySelector('.board-form[name="new-board"]')
 
@@ -98,6 +99,7 @@ function show_new_board_form() {
     }
 }
 
+// Функция показа формы редактирования доски
 function show_board_edit_form(event) {
     let board = event.target.parentElement.parentElement
     let boardForm = document.querySelector(`.board-form[value="${board.getAttribute('id')}"]`)
@@ -124,6 +126,7 @@ function show_board_edit_form(event) {
     }
 }
 
+// Функция для удаления доски
 function deleteBoard(event) {
     const csrftoken = getCookie('csrftoken');
     let board = event.target.parentElement.parentElement
@@ -173,14 +176,19 @@ function buttonResponse(event) {
         else if (event.target.classList.contains('board__button_delete')) {
             deleteBoard(event)
         }
+        else if (event.target.classList.contains('board__button_select')) {
+            let siteURL = `${window.location.protocol}//${window.location.host}`
+            let id = event.target.parentElement.parentElement.getAttribute('id')
+            window.location.assign(`${siteURL}/board/${id}`)
+        }
     }
     else if (event.target.classList.contains('new-board')) {
         let boardFormStyle = document.querySelector('.board-style')
 
         if (!boardFormStyle) {
             document.head.insertAdjacentHTML('beforeend', `<link class="board-style" rel="stylesheet" href="static/css/board/board_form.css">`)
+            get_board_form()
         }
-
         show_new_board_form()
     }
 }
@@ -200,7 +208,27 @@ function updateBoard(data) {
 
 // Функция добавления новой доски на страницу
 function add_new_board(data) {
-    new_board = document.querySelector('.board').cloneNode(true)
+    let container = document.querySelector('.container')
+    let boardElement = document.querySelector('.board')
+
+    if (!boardElement) {
+        let siteURL = `${window.location.protocol}//${window.location.host}`
+        let init = {
+            method: 'GET',
+            csrftoken: getCookie('csrftoken')
+        }
+        fetch(`${siteURL}/board/api/board`, init)
+        .then(response => {
+            if (!response.ok) throw new Error('Что-то не так')
+            return response.text()
+        })
+        .then(html => {sessionStorage.setItem('board', html)})
+        .catch(error => {console.log(error)})
+    }
+
+    let template = document.createElement('div')
+    template.innerHTML = sessionStorage.getItem('board')
+    let new_board = template.children.item(0)
 
     new_board.setAttribute('id', data.pk)
     new_board.querySelector('.board__title').innerHTML = data.fields.title
@@ -208,7 +236,15 @@ function add_new_board(data) {
     new_board.querySelector('.board__info_item_columns').innerHTML = data.fields.columns.length
     new_board.querySelector('.board__info_item_total-users').innerHTML = data.fields.total_users
 
-    document.querySelector('.container').appendChild(new_board)
+    if (container) {
+        container.appendChild(new_board)
+    }
+    else {
+        let container = document.createElement('div')
+        container.setAttribute('class', 'container')
+        document.body.appendChild(container)
+        container.appendChild(new_board)
+    }
 }
 
 // Функция отправки формы
