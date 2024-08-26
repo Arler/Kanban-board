@@ -72,8 +72,12 @@ def task_api(request):
             return HttpResponseBadRequest('Wrong id')
 
 def board_api(request):
-    data = json.loads(request.body.decode('utf-8'))
-    if request.method == 'POST':
+    if request.method == 'GET':
+        html_file = open(os.path.join(settings.TEMPLATES[0]['DIRS'][0], 'board', 'board.html'), 'r')
+        
+        return HttpResponse(html_file.read(), content_type='text/html')
+    elif request.method == 'POST':
+        data = json.loads(request.body.decode('utf-8'))
         data['owner'] = request.user.id
         new_board_form = BoardForm(data)
 
@@ -86,6 +90,7 @@ def board_api(request):
         else:
             return JsonResponse({'errors': new_board_form.errors}, status=400)
     elif request.method == 'PUT':
+        data = json.loads(request.body.decode('utf-8'))
         data['owner'] = request.user.id
 
         board = Board.objects.get(pk=data.get('id'))
@@ -99,6 +104,7 @@ def board_api(request):
         else:
             return JsonResponse({'errors': edit_board_form.errors}, status=400)
     elif request.method == 'DELETE':
+        data = json.loads(request.body.decode('utf-8'))
         board = Board.objects.get(pk=data.get('id', None))
         if board:
             board.delete()
@@ -159,9 +165,9 @@ def main(request):
     return render(request, template_name='board/main_page.html', context=context)
 
 @ensure_csrf_cookie
-def board(request):
+def board(request, pk):
     # Рендерит страницу с доской
-    board = Board.objects.filter(owner=request.user)
+    board = Board.objects.filter(owner=request.user, pk=pk)[0]
     
     context = {
         "tasks": board.tasks.all(),
