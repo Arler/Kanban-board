@@ -14,6 +14,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
+// Функция получения формы доски
 function get_board_form() {
     const csrftoken = getCookie('csrftoken');
 
@@ -35,6 +36,7 @@ function get_board_form() {
     .catch(error => {console.log(error)})
 }
 
+// Функция отключения формы
 function hideForm() {
     let = activeForm = document.querySelector('.active')
     if (activeForm) {
@@ -209,42 +211,38 @@ function updateBoard(data) {
 // Функция добавления новой доски на страницу
 function add_new_board(data) {
     let container = document.querySelector('.container')
-    let boardElement = document.querySelector('.board')
-
-    if (!boardElement) {
-        let siteURL = `${window.location.protocol}//${window.location.host}`
-        let init = {
-            method: 'GET',
-            csrftoken: getCookie('csrftoken')
-        }
-        fetch(`${siteURL}/board/api/board`, init)
-        .then(response => {
-            if (!response.ok) throw new Error('Что-то не так')
-            return response.text()
-        })
-        .then(html => {sessionStorage.setItem('board', html)})
-        .catch(error => {console.log(error)})
+    let siteURL = `${window.location.protocol}//${window.location.host}`
+    let init = {
+        method: 'GET',
+        csrftoken: getCookie('csrftoken')
     }
 
-    let template = document.createElement('div')
-    template.innerHTML = sessionStorage.getItem('board')
-    let new_board = template.children.item(0)
+    fetch(`${siteURL}/board/api/board`, init)
+    .then(response => {
+        if (!response.ok) throw new Error('Что-то не так')
+        return response.text()
+    })
+    .then(html => {sessionStorage.setItem('board', html)})
+    .catch(error => {console.log(error)})
+
+    if (container) {
+        container.insertAdjacentHTML('beforeend', sessionStorage.getItem('board'))
+    }
+    else {
+        let container = document.createElement('div')
+        container.setAttribute('class', 'container')
+        document.body.appendChild(container)
+        container.insertAdjacentHTML('beforeend', sessionStorage.getItem('board'))
+    }
+
+    let boards = document.querySelectorAll('.board')
+    let new_board = boards[boards.length - 1]
 
     new_board.setAttribute('id', data.pk)
     new_board.querySelector('.board__title').innerHTML = data.fields.title
     new_board.querySelector('.board__info_item_tasks').innerHTML = data.fields.tasks.length
     new_board.querySelector('.board__info_item_columns').innerHTML = data.fields.columns.length
     new_board.querySelector('.board__info_item_total-users').innerHTML = data.fields.total_users
-
-    if (container) {
-        container.appendChild(new_board)
-    }
-    else {
-        let container = document.createElement('div')
-        container.setAttribute('class', 'container')
-        document.body.appendChild(container)
-        container.appendChild(new_board)
-    }
 }
 
 // Функция отправки формы
