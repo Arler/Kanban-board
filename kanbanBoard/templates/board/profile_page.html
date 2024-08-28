@@ -1,22 +1,33 @@
 {% extends "default.html" %}
 
+{% load static %}
+
 {% block title %}
-    Профиль
+    Профиль {{ user.username }}
 {% endblock title %}
 
+{% block link_css %}
+    <link rel="stylesheet" href="{% static "css/board/profile_page.css" %}">
+{% endblock link_css %}
+
 {% block content %}
-    <div class="profile-container">
-        <div class="profile-settings">
+    <div class="container">
+        <div class="profile-container">
             <div class="notifications">
                 <label class="notifications__label" for="send-notifications">Получать уведомления</label>
                 <input class="notifications__checkbox" type="checkbox" id="send-notifications">
             </div>
             <div class="username">
                 <label class="username__label" for="change-username">Имя пользователя: {{ user.username }}</label>
-                <button class="username__change" type="submit" id="change-username">Изменить</button>
+                <input class="username__change" type="text" name="username" id="change-username">
+            </div>
+            <div class="profile-container__save-wrapper">
+                <button class="profile-container__save" type="submit">Сохранить</button>
             </div>
             <div class="danger-zone">
-                <div class="danger-zone__title">Опасная зона</div>
+                <div class="danger-zone__title-block">
+                    <span class="danger-zone__title">Опасная зона</span>
+                </div>
                 <button class="danger-zone__delete-account" type="submit">Удалить аккаунт</button>
             </div>
         </div>
