@@ -12,24 +12,37 @@
 
 {% block content %}
     <div class="container">
-        <div class="profile-container">
-            <div class="notifications">
-                <label class="notifications__label" for="send-notifications">Получать уведомления</label>
-                <input class="notifications__checkbox" type="checkbox" id="send-notifications">
-            </div>
-            <div class="username">
-                <label class="username__label" for="change-username">Имя пользователя: {{ user.username }}</label>
-                <input class="username__change" type="text" name="username" id="change-username">
-            </div>
-            <div class="profile-container__save-wrapper">
-                <button class="profile-container__save" type="submit">Сохранить</button>
-            </div>
-            <div class="danger-zone">
-                <div class="danger-zone__title-block">
-                    <span class="danger-zone__title">Опасная зона</span>
+        <form class="confirm-delete">
+            <div class="banner">
+                <span class="banner__title"></span>
+                <div class="banner__buttons">
+                    <button class="banner__button-yes" type="submit">Да</button>
+                    <button class="banner__button-no" type="submit">Нет</button>
                 </div>
-                <button class="danger-zone__delete-account" type="submit">Удалить аккаунт</button>
             </div>
+        </form>
+        <div class="profile-container">
+            <form class="profile-edit">
+                <div class="notifications">
+                    <label class="notifications__label" for="send-notifications">Получать уведомления</label>
+                    <input class="notifications__checkbox" name="notifications-status" type="checkbox" id="send-notifications">
+                </div>
+                <div class="username">
+                    <label class="username__label" for="change-username">Имя пользователя: {{ user.username }}</label>
+                    <input class="username__change" type="text" name="new-username" id="change-username">
+                </div>
+                <div class="profile-container__save-wrapper">
+                    <button class="profile-container__save" type="submit">Сохранить</button>
+                </div>
+            </form>
+            <form class="profile-delete">
+                <div class="danger-zone">
+                    <div class="danger-zone__title-block">
+                        <span class="danger-zone__title">Опасная зона</span>
+                    </div>
+                    <button class="danger-zone__delete-account" type="submit">Удалить аккаунт</button>
+                </div>
+            </form>
         </div>
     </div>
 {% endblock content %}
