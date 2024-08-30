@@ -25,11 +25,15 @@
             <form class="profile-edit">
                 <div class="notifications">
                     <label class="notifications__label" for="send-notifications">Получать уведомления</label>
-                    <input class="notifications__checkbox" name="notifications-status" type="checkbox" id="send-notifications">
+                    {% if user.send_notifications %}
+                        <input class="notifications__checkbox" name="send_notifications" checked type="checkbox" id="notifications-status">
+                    {% else %}
+                        <input class="notifications__checkbox" name="send_notifications" type="checkbox" id="notifications-status">
+                    {% endif %}
                 </div>
                 <div class="username">
                     <label class="username__label" for="change-username">Имя пользователя: {{ user.username }}</label>
-                    <input class="username__change" type="text" name="new-username" id="change-username">
+                    <input class="username__change" type="text" name="username" id="change-username">
                 </div>
                 <div class="profile-container__save-wrapper">
                     <button class="profile-container__save" type="submit">Сохранить</button>
@@ -45,4 +49,5 @@
             </form>
         </div>
     </div>
+    <script src="{% static 'js/profile_page.js' %}"></script>
 {% endblock content %}
