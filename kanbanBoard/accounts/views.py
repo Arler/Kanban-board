@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.http import HttpResponseBadRequest, HttpResponse
+from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
+from django.core.serializers import serialize
 
 from .models import User
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 import json
 
@@ -36,20 +37,20 @@ def profile(request):
 def profile_api(request):
     if request.method == 'PUT':
         # Отвечает за изменения настроек профиля пользователя
-        request_json = json.loads(request.body)
+        data = json.loads(request.body)
+        if data['send_notifications'] == 'false':
+            data['send_notifications'] = False
+        if not data.get('username', False):
+            data['username'] = request.user.username
+        changed_user_form = CustomUserChangeForm(data, instance=request.user)
 
-        if request_json.get('change_notifications', False):
-            request.user.send_notifications = request_json.get('notifications-status')
+        if changed_user_form.is_valid():
+            changed_user_form = changed_user_form.save()
+            changed_user_form = json.loads(serialize('json', [changed_user_form]))
 
-            return HttpResponse()
-
-        elif request_json.get('change_username', False):
-            request.user.username = request_json.get('new-username')
-
-            return HttpResponse()
-
+            return JsonResponse(changed_user_form, safe=False)
         else:
-            return HttpResponseBadRequest('Wrong request')
+            return HttpResponseBadRequest(f'Wrong request: {changed_user_form.errors}')
 
     elif request.method == 'DELETE':
         # Отвечает за удаление аккаунта пользователя
