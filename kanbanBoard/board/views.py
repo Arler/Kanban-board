@@ -35,17 +35,17 @@ def task_api(request):
 
         # Добавление и удаление пользователей на задачу
         if data.get('remove-user', None):
-            removed_user = User.objects.get(pk=data.get('user', None)) # Должен быть id пользователя
-            if removed_user:
-                task.users.remove(User.objects.get(pk=removed_user))
+            removed_users = User.objects.filter(task__users=data.get('users', None)) # Должен быть id пользователя
+            if removed_users:
+                task.users.remove(removed_users)
 
                 return HttpResponse()
             else:
                 return HttpResponseBadRequest('Wrong user id')
         elif data.get('add-user', None):
-            added_user = User.objects.get(pk=data.get('user', None)) # Должен быть id пользователя
-            if added_user:
-                task.users.add(added_user)
+            added_users = User.objects.filter(task__users=data.get('users', None)) # Должен быть id пользователя
+            if added_users:
+                task.users.add(added_users)
 
                 return HttpResponse()
             else:
@@ -91,9 +91,12 @@ def board_api(request):
             return JsonResponse({'errors': new_board_form.errors}, status=400)
     elif request.method == 'PUT':
         data = json.loads(request.body.decode('utf-8'))
-        data['owner'] = request.user.id
-
         board = Board.objects.get(pk=data.get('id'))
+
+        data['owner'] = request.user.id
+        if not data.get('title', False):
+            data['title'] = board.title
+
         edit_board_form = BoardForm(data, instance=board)
         if edit_board_form.is_valid():
             edit_board_form.save()
