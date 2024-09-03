@@ -1,0 +1,12 @@
+{% extends "../default.html" %}
+
+{% load static %}
+
+{% block title %}{{ board.title }}{% endblock title %}
+
+{% block link_css %}<link rel="stylesheet" href="{% static 'css/board/board_page.css' %}"></link>{% endblock link_css %}
+
+{% block content %}
+
+    <script src="{% static 'js/board_page.js' %}"></script>
+{% endblock content %}
