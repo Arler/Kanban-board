@@ -173,6 +173,7 @@ def board(request, pk):
     board = Board.objects.filter(owner=request.user, pk=pk)[0]
     
     context = {
+        "board": board,
         "tasks": board.tasks.all(),
         "board_form": BoardForm(),
         "task_form": TaskForm(),
