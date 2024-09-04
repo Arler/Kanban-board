@@ -10,27 +10,29 @@
     <div class="container">
         <div class="board">
             <div class="board__settings-buttons">
-                <span class="board__add-task"></span>
-                <span class="board__title"></span>
-                <span class="board__settings"></span>
+                <span class="board__add-task">+ Добавить задачу</span>
+                <span class="board__title">{{ board.title }}</span>
+                <span class="board__settings">Настройки доски</span>
             </div>
-            {% for column in board.columns %}
-                <div class="column">
-                    <div class="column__title-block">
-                        <span class="column__title">{{ column.title }}</span>
+            <div class="column-container">
+            {% for column in board.columns.all %}
+                    <div class="column">
+                        <div class="column__title-block">
+                            <span class="column__title">{{ column.title }}</span>
+                        </div>
+                        <div class="column__tasks-container">
+                            {% for task in board.tasks.all %}
+                                {% if task.column.title == column.title %}
+                                    <div class="task">
+                                        <span class="task__title">{{ task.title }}</span>
+                                        <span class="task__description">{{ task.description }}</span>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
                     </div>
-                    <div class="column__tasks-container">
-                        {% for task in board.tasks %}
-                            {% if task.column.title == column.title %}
-                                <div class="task">
-                                    <span class="task__title">{{ task.title }}</span>
-                                    <span class="task__description">{{ task.description }}</span>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
     <script src="{% static 'js/board_page.js' %}"></script>
