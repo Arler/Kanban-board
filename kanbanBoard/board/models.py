@@ -17,7 +17,7 @@ class Task(models.Model):
     date_created = models.DateField(auto_now_add=True)
     deadline = models.DateField(blank=True)
     users = models.ManyToManyField(User, blank=True)
-    comments = models.TextField(blank=True)
+    description = models.TextField(blank=True)
     column = models.ForeignKey("Column", on_delete=models.CASCADE)
 
 
