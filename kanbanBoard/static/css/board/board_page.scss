@@ -1,0 +1,91 @@
+@import "../default.scss";
+
+.container {
+	margin-top: 124px;
+	display: flex;
+	justify-content: center;
+}
+.board {
+    display: flex;
+	padding: 10px 10px 0 10px;
+	min-height: 693px;
+	min-width: 714px;
+	width: max-content;
+	border-radius: 20px;
+	background: #4caf50;
+	flex-direction: column;
+    
+		&__settings-buttons {
+			height: 30px;
+			width: 100%;
+			color: #f5f5f5;
+			font-family: Alexandria, sans-serif;
+			font-size: 24px;
+			display: flex;
+			justify-content: space-between;
+			margin-top: 4px;
+		}
+		&__add-task {
+			&:hover {
+				cursor: pointer;
+			}
+		}
+		&__title {
+		}
+		&__settings {
+			&:hover {
+				cursor: pointer;
+			}
+		}
+}
+.column-container {
+	margin-top: 25px;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	gap: 47px;
+}
+.column {
+	width: 200px;
+	height: 628px;
+	background: #388e3c;
+
+		&__title-block {
+			width: 200px;
+			height: 60px;
+			background: #942222;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		&__title {
+			color: #f5f5f5;
+			font-family: Alexandria, sans-serif;
+			font-size: 24px;
+		}
+		&__tasks-container {
+			display: flex;
+			flex-direction: column;
+			padding: 30px 20px;
+		}
+}
+.task {
+	width: 160px;
+	height: 160px;
+	background: #e2dd42;
+	padding: 15px 7px;
+	display: flex;
+	flex-direction: column;
+
+		&__title {
+			font-family: Alexandria, sans-serif;
+			font-size: 16px;
+			color: #000000;
+		}
+		&__description {
+			margin-top: 10px;
+			color: #757575;
+			font-family: Alexandria, sans-serif;
+			font-size: 16px;
+		}
+}
