@@ -17,6 +17,7 @@ function getCookie(name) {
 // Функция получения формы доски
 function get_board_form() {
     const csrftoken = getCookie('csrftoken');
+    let siteURL = `${window.location.protocol}//${window.location.host}`
 
     let init = {
         method: 'GET',
@@ -25,7 +26,7 @@ function get_board_form() {
             'X-get-form': true,
         },
     }
-    fetch('http://127.0.0.1:8000/', init)
+    fetch(`${siteURL}/api/forms/newboard/`, init)
     .then(response => {
         if (!response.ok) throw new Error('Что-то не так')
         return response.text()
@@ -133,6 +134,7 @@ function deleteBoard(event) {
     const csrftoken = getCookie('csrftoken');
     let board = event.target.parentElement.parentElement
     let board_id = board.getAttribute('id')
+    let siteURL = `${window.location.protocol}//${window.location.host}`
 
     let init = {
         method: "DELETE",
@@ -145,7 +147,7 @@ function deleteBoard(event) {
         )
     }
 
-    fetch('http://127.0.0.1:8000/board/api/board/', init)
+    fetch(`${siteURL}/board/api/board/`, init)
     .then(response => {
         if (!response.ok) throw new Error('Что-то не так')
         return response
@@ -248,6 +250,7 @@ function add_new_board(data) {
 // Функция отправки формы
 function sendForm(event) {
     let form = event.target
+    let siteURL = `${window.location.protocol}//${window.location.host}`
     const csrftoken = getCookie('csrftoken');
 
     event.preventDefault()
@@ -262,7 +265,7 @@ function sendForm(event) {
             body: JSON.stringify(Object.fromEntries(new FormData(form)))
         }
 
-        fetch('http://127.0.0.1:8000/board/api/board/', init)
+        fetch(`${siteURL}/board/api/board/`, init)
         .then(response => {
             if (!response.ok) throw new Error('Что-то не так')
             return response.json()
@@ -280,7 +283,7 @@ function sendForm(event) {
             body: JSON.stringify(Object.fromEntries(new FormData(form)))
         }
 
-        fetch('http://127.0.0.1:8000/board/api/board/', init)
+        fetch(`${siteURL}/board/api/board/`, init)
         .then(response => {
             if (!response.ok) throw new Error('Что-то не так')
             return response.json()
