@@ -18,6 +18,13 @@ class TaskForm(forms.ModelForm):
         model = Task
         fields = '__all__'
         exclude = ['date_created']
+        labels = {
+            "title": "Название",
+            "deadline": "Дэдлайн",
+            "users": "Пользователи",
+            "description": "Описание",
+            "column": "Столбец",
+        }
 
 
 class ColumnForm(forms.ModelForm):
