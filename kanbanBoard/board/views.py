@@ -72,11 +72,7 @@ def task_api(request):
             return HttpResponseBadRequest('Wrong id')
 
 def board_api(request):
-    if request.method == 'GET':
-        html_file = open(os.path.join(settings.TEMPLATES[0]['DIRS'][0], 'board', 'board.html'), 'r')
-        
-        return HttpResponse(html_file.read(), content_type='text/html')
-    elif request.method == 'POST':
+    if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         data['owner'] = request.user.id
         new_board_form = BoardForm(data)
