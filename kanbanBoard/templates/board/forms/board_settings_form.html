@@ -1,0 +1,23 @@
+<form class="board-settings" value="{{ board.pk }}">
+    <div class="inputs-container">
+        {% for field in form %}
+            <div class="input-line">
+                <div class="input-line__label-wrap">
+                    {{ field.label_tag }}
+                </div>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <button class="new-column" type="submit">Добавить новую колонку</button>
+    </div>
+    <div class="column-container">
+        {% for column in board.columns.all %}
+        <div class="column">
+            <span class="column__title">{{ column.title }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</form>
+
+<button class="delete-button" type="button">Удалить</button>
+<button class="edit-button" type="button">Изменить</button>
