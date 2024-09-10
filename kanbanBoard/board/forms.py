@@ -6,10 +6,10 @@ class BoardForm(forms.ModelForm):
     class Meta:
         model = Board
         fields = '__all__'
-        exclude = ['columns']
+        exclude = ['columns', 'tasks', 'owner']
         labels = {
-            "tasks": "Задачи",
-            "max_tasks": "Макс кол-во задач"
+            "title": "Название",
+            "max_tasks": "Макс кол-во задач",
         }
 
 
@@ -31,3 +31,6 @@ class ColumnForm(forms.ModelForm):
     class Meta:
         model = Column
         fields = '__all__'
+        labels = {
+            "title": "Название",
+        }
