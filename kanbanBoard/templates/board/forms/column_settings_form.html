@@ -1,0 +1,15 @@
+<form class="column-settings", value="{{ pk }}">
+    <div class="inputs-container">
+        {% for field in form %}
+            <div class="input-line">
+                <div class="input-line__label-wrap">
+                    {{ field.label_tag }}
+                </div>
+                {{ field }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="buttons">
+        <button class="buttons__button-save" type="submit">Сохранить</button>
+    </div>
+</form>
