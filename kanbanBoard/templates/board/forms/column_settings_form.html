@@ -1,3 +1,5 @@
+{% load static %}
+<link rel="stylesheet" href="{% static "css/board/forms/column_settings_form.css" %}">
 <form class="column-settings", value="{{ pk }}">
     <div class="inputs-container">
         {% for field in form %}
