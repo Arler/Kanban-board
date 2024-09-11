@@ -1,16 +1,15 @@
-<form class="board-form" value="">
-    <div class="board-form__label-line">
-        <div class="board-form__label-wrap">
-            <label for="board-name">Название</label>
-        </div>
-        <input type="text" name="title" id="board-name">
+{% load static %}
+<link rel="stylesheet" href="{% static "css/board/forms/new_board_form.css" %}">
+<form class="board-form" value="{{ pk }}">
+    <div class="inputs-container">
+        {% for field in form %}
+            <div class="input-line">
+                <div class="input-line__label-wrap">
+                    {{ field.label_tag }}
+                </div>
+                {{ field }}
+            </div>
+        {% endfor %}
+        <button class="save" type="submit">Сохранить</button>
     </div>
-    <div class="board-form__label-line">
-        <div class="board-form__label-wrap board-form__label-wrap_max-count">
-            <label for="board-max-tasks">Макс кол-во задач</label>
-        </div>
-        <input type="number" name="max_tasks" id="board-max-tasks">
-    </div>
-    <input type="hidden" name="id" value="">
-    <button class="board-form__button" type="submit">Сохранить</button>
 </form>
