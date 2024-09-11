@@ -1,15 +1,18 @@
-@import "../../default.scss";
+@import "default_forms.scss";
 
 .column-settings {
+    visibility: hidden;
+    width: 450px;
+    height: min-content;
+    z-index: 2;
+}
+.inputs-container {
+    background: #f5f5f5;
+    padding: 10px;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    width: min-content;
-    background: #f5f5f5;
-    padding: 10px;
     gap: 10px;
-}
-.inputs-container {
 }
 .input-line {
     display: inline-flex;

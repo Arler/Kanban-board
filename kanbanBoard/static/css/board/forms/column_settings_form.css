@@ -98,14 +98,24 @@ h1, h2, h3, h4, h5, h6 {
   margin: 14px 40px 0 0;
 }
 
+.active {
+  visibility: visible;
+}
+
 .column-settings {
+  visibility: hidden;
+  width: 450px;
+  height: -moz-min-content;
+  height: min-content;
+  z-index: 2;
+}
+
+.inputs-container {
+  background: #f5f5f5;
+  padding: 10px;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  width: -moz-min-content;
-  width: min-content;
-  background: #f5f5f5;
-  padding: 10px;
   gap: 10px;
 }
 
