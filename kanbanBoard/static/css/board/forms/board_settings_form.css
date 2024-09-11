@@ -98,11 +98,16 @@ h1, h2, h3, h4, h5, h6 {
   margin: 14px 40px 0 0;
 }
 
+.active {
+  visibility: visible;
+}
+
 .board-settings {
   visibility: hidden;
   width: 450px;
   height: -moz-min-content;
   height: min-content;
+  z-index: 2;
 }
 
 .inputs-container {
@@ -122,6 +127,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 50px;
   border-radius: 4px;
   background: #ffffff;
+  font-size: 16px;
 }
 .input-line__label-wrap {
   width: 150px;
