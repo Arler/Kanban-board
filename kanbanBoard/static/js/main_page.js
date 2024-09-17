@@ -1,7 +1,7 @@
 import { getCookie } from "./default.js";
 
 // Функция получения формы доски
-function get_board_form(pk) {
+function get_board_form(pk, func=() => {}, event=null) {
     fetch(
         `${window.location.protocol}//${window.location.host}/api/forms/newboard/${pk}/`,
         {
@@ -19,6 +19,7 @@ function get_board_form(pk) {
         let boardFormHtml = html.replace(/<link.*?>/, ' ')
         sessionStorage.setItem('board-form-style', style)
         sessionStorage.setItem('board-form', boardFormHtml)
+        func(event)
     })
     .catch(error => {console.log(error)})
 }
@@ -150,8 +151,7 @@ function buttonResponse(event) {
             let not_forms = document.querySelector('.board-form') == null
 
             if (not_forms) {
-                get_board_form(event.target.parentElement.parentElement.id)
-                show_board_edit_form(event)
+                get_board_form(event.target.parentElement.parentElement.id, show_board_edit_form, event)
             }
             else {
                 show_board_edit_form(event)
