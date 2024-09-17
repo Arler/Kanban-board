@@ -55,12 +55,11 @@ function setup_form_nearby_header(formElement, headerElement) {
 
     formElement.style.position = 'absolute'
     formElement.style.top = `${headerRect.bottom}px`
-    formElement.setAttribute('name', 'new-board')
 }
 
 // Функция для показа или вставки формы создания новой доски
 function show_new_board_form() {
-    let newBoardForm = document.querySelector('.board-form[name="new-board"]')
+    let newBoardForm = document.querySelector('.board-form[value="0"]')
 
     if (newBoardForm) {
         if (newBoardForm.classList.contains('active')) {
@@ -73,16 +72,14 @@ function show_new_board_form() {
     }
     else {
         hideForm()
-        
-        let header = document.querySelector('.header')
-        header.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
-    
-        let newBoardForm = document.querySelector(`.board-form[value=""]`)
-        newBoardForm.setAttribute('name', 'new-board-form')
-        newBoardForm.setAttribute('value', 'new')
-        setup_form_nearby_header(newBoardForm, header)
-    
-        newBoardForm.classList.toggle('active')
+        get_board_form(0, () => {
+            let header = document.querySelector('.header')
+            document.head.insertAdjacentHTML("beforeend", sessionStorage.getItem('board-form-style'))
+            header.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
+            let newBoardForm = document.querySelector(`.board-form[value="0"]`)
+            setup_form_nearby_header(newBoardForm, header)
+            newBoardForm.classList.toggle('active')
+        })
     }
 }
 
@@ -103,16 +100,17 @@ function show_board_edit_form(event) {
     }
     else {
         hideForm()
+        get_board_form(board.getAttribute('id'), () => {
+            board.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
 
-        if (!document.querySelector('#board-form-style')) {
-            document.head.insertAdjacentHTML("beforeend", sessionStorage.getItem('board-form-style'))
-        }
-        board.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
-        let boardForm = document.querySelector(`.board-form[value="${board.getAttribute('id')}"]`)
-
-        setup_form_nearby_board(boardForm, board)
-
-        boardForm.classList.toggle('active')
+            if (!document.querySelector('#board-form-style')) {
+                document.head.insertAdjacentHTML("beforeend", sessionStorage.getItem('board-form-style'))
+            }
+    
+            let boardForm = document.querySelector(`.board-form[value="${board.getAttribute('id')}"]`)
+            setup_form_nearby_board(boardForm, board)
+            boardForm.classList.toggle('active')
+        })
     }
 }
 
@@ -148,14 +146,7 @@ function deleteBoard(event) {
 function buttonResponse(event) {
     if (event.target.classList.contains('board__button')) {
         if (event.target.classList.contains('board__button_edit')) {
-            let not_forms = document.querySelector('.board-form') == null
-
-            if (not_forms) {
-                get_board_form(event.target.parentElement.parentElement.id, show_board_edit_form, event)
-            }
-            else {
-                show_board_edit_form(event)
-            }
+            show_board_edit_form(event)
         }
         else if (event.target.classList.contains('board__button_delete')) {
             deleteBoard(event)
@@ -167,12 +158,6 @@ function buttonResponse(event) {
         }
     }
     else if (event.target.classList.contains('new-board')) {
-        let boardFormStyle = document.querySelector('.board-style')
-
-        if (!boardFormStyle) {
-            document.head.insertAdjacentHTML('beforeend', `<link class="board-style" rel="stylesheet" href="static/css/board/board_form.css">`)
-            get_board_form(0)
-        }
         show_new_board_form()
     }
 }
