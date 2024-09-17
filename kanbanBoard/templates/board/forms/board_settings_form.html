@@ -1,5 +1,5 @@
 {% load static %}
-<link rel="stylesheet" href="{% static "css/board/forms/board_settings_form.css" %}">
+<link id="board-settings-style" rel="stylesheet" href="{% static "css/board/forms/board_settings_form.css" %}">
 <form class="board-settings" value="{{ board.pk }}">
     <div class="inputs-container">
         {% for field in form %}
