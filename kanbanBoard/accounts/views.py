@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import HttpResponseBadRequest, HttpResponse, JsonResponse
 from django.core.serializers import serialize
+from django.contrib.auth.decorators import login_required
 
 from .models import User
 from .forms import CustomUserCreationForm, CustomUserChangeForm
@@ -24,6 +25,7 @@ def registration(request):
 
         return render(request, template_name='registration/registration.html', context=context)
 
+@login_required
 @ensure_csrf_cookie
 def profile(request):
     # Рендерит страницу профиля

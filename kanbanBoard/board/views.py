@@ -4,6 +4,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.db.models import Count
 from django.conf import settings
 from django.core.serializers import serialize
+from django.contrib.auth.decorators import login_required
 
 from accounts.models import User
 
@@ -145,7 +146,7 @@ def colimn_api(request):
 
 # =================== other views ===================
 
-
+@login_required
 @ensure_csrf_cookie
 def main(request):
     if request.headers.get('X-get-form', None):
@@ -163,6 +164,7 @@ def main(request):
 
     return render(request, template_name='board/main_page.html', context=context)
 
+@login_required
 @ensure_csrf_cookie
 def board(request, pk):
     # Рендерит страницу с доской
@@ -177,5 +179,3 @@ def board(request, pk):
     }
 
     return render(request, template_name='board/board_page.html', context=context)
-
-
