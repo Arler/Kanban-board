@@ -98,6 +98,10 @@ h1, h2, h3, h4, h5, h6 {
   margin: 14px 40px 0 0;
 }
 
+body {
+  background: #C8E6C9;
+}
+
 .container {
   margin-top: 124px;
   display: flex;
@@ -171,6 +175,10 @@ h1, h2, h3, h4, h5, h6 {
   padding: 15px 7px;
   display: flex;
   flex-direction: column;
+}
+.task:hover {
+  cursor: pointer;
+  border: #000000 1px solid;
 }
 .task__title {
   font-family: Alexandria, sans-serif;
