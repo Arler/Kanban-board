@@ -1,4 +1,4 @@
-{% extends "default.html" %}
+{% extends "../default.html" %}
 
 {% block title %}Главная страница{% endblock title %}
 
@@ -16,5 +16,5 @@
             {% endfor %}
         </div>
     {% endif %}
-    <script src="{% static 'js/main_page.js' %}"></script>
+    <script type="module" src="{% static 'js/main_page.js' %}"></script>
 {% endblock content %}
