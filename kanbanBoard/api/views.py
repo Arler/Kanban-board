@@ -36,3 +36,11 @@ def get_column_settings_form(request, pk):
     }
 
     return render(request, template_name="board/forms/column_settings_form.html", context=context)
+
+def get_task_description(request, pk):
+    task = Task.objects.get(pk=pk)
+    context = {
+        "task": task
+    }
+
+    return render(request, template_name="board/task_description.html", context=context)
