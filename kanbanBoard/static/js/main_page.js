@@ -1,4 +1,4 @@
-import { getCookie } from "./default.js";
+import { getCookie, hideForm } from "./default.js";
 
 // Функция получения формы доски
 function get_board_form(pk, func=() => {}, event=null) {
@@ -22,14 +22,6 @@ function get_board_form(pk, func=() => {}, event=null) {
         func(event)
     })
     .catch(error => {console.log(error)})
-}
-
-// Функция отключения формы
-function hideForm() {
-    let activeForm = document.querySelector('.active')
-    if (activeForm) {
-        activeForm.classList.remove('active')
-    }
 }
 
 // Функция установки формы изменения доски рядом с доской
