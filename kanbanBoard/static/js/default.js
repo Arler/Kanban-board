@@ -13,3 +13,11 @@ export function getCookie(name) {
     }
     return cookieValue;
 }
+
+// Функция отключения формы
+export function hideForm() {
+    let activeForm = document.querySelector('.active')
+    if (activeForm) {
+        activeForm.classList.remove('active')
+    }
+}
