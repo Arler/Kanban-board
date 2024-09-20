@@ -16,22 +16,22 @@
             </div>
             <div class="column-container">
             {% for column in board.columns.all %}
-                    <div class="column">
-                        <div class="column__title-block">
-                            <span class="column__title">{{ column.title }}</span>
-                        </div>
-                        <div class="column__tasks-container">
-                            {% for task in board.tasks.all %}
-                                {% if task.column.title == column.title %}
-                                    <div class="task">
-                                        <span class="task__title">{{ task.title }}</span>
-                                        <span class="task__description">{{ task.description }}</span>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
+                <div class="column">
+                    <div class="column__title-block">
+                        <span class="column__title">{{ column.title }}</span>
                     </div>
-                {% endfor %}
+                    <div class="column__tasks-container">
+                        {% for task in board.tasks.all %}
+                            {% if task.column.title == column.title %}
+                                <div class="task">
+                                    <span class="task__title">{{ task.title }}</span>
+                                    <span class="task__description">{{ task.description }}</span>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
             </div>
         </div>
     </div>
