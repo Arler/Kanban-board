@@ -53,6 +53,16 @@
   font-family: "Alexandria", sans-serif;
   font-size: 18px;
 }
+.save-button {
+  width: 440px;
+  height: 40px;
+  background: #4caf50;
+  border-radius: 4px;
+  font-family: "Alexandria", sans-serif;
+  font-size: 14px;
+  color: #ffffff;
+}
+
 .new-column {
   width: 440px;
   height: 40px;
