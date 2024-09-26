@@ -208,8 +208,6 @@ function add_new_board(data) {
 // Функция отправки формы
 function sendForm(event) {
     let form = event.target
-    let siteURL = `${window.location.protocol}//${window.location.host}`
-    const csrftoken = getCookie('csrftoken');
 
     event.preventDefault()
 
@@ -219,7 +217,7 @@ function sendForm(event) {
             {
                 method: "POST",
                 headers: {
-                    'X-CSRFToken': csrftoken,
+                    'X-CSRFToken': getCookie('csrftoken'),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(Object.fromEntries(new FormData(form)))
@@ -240,7 +238,7 @@ function sendForm(event) {
             {
                 method: "PUT",
                 headers: {
-                    'X-CSRFToken': csrftoken,
+                    'X-CSRFToken': getCookie('csrftoken'),
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(Object.fromEntries(new FormData(form)))
