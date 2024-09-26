@@ -8,6 +8,40 @@ function buttonResponse(event) {
     }
 }
 
+// Отслеживание события клика по кнопкам
+document.addEventListener('click', buttonResponse)
+// Отслеживание события отправки формы
+document.addEventListener("submit", sendForm)
+
+function sendForm(event) {
+    let form = event.target
+
+    event.preventDefault()
+
+    if (form.getAttribute('name') == "board-settings") {
+        fetch(
+            `${window.location.protocol}//${window.location.host}/api/board/`,
+            {
+                method: "PUT",
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(Object.fromEntries(new FormData(form))),
+            }
+        )
+        .then(response => {
+            if (!response.ok) throw new Error('Что-то не так')
+            return response.json()
+        })
+        .then(json => {
+            // -------------------- Добавить функцию обновления доски --------------------
+            console.log(json)
+        })
+        .catch(error => {console.log(error)})
+    }
+}
+
 // Функция получения формы изменения настроек доски
 function get_board_settings_form(pk, func=() => {}, event=null) {
     fetch(
@@ -32,9 +66,12 @@ function get_board_settings_form(pk, func=() => {}, event=null) {
     .catch(error => {console.log(error)})
 }
 
-// Функция показа формы настройки доскиdocument.URL.match(/(\d+)(\/)$/)[0]
+// Функция обновления доски
+function update_board() {}
+
+// Функция показа формы настройки доски
 function show_board_settings_form(event) {
-    let boardSettingsForm = document.querySelector(`.board-settings[value="${document.URL.match(/(\d+)(\/)?$/)[0]}"]`)
+    let boardSettingsForm = document.querySelector(`.board-settings`)
 
     if (boardSettingsForm) {
         if (boardSettingsForm.classList.contains('active')) {
@@ -71,6 +108,3 @@ function setup_board_settings_form(formElement, buttonElement) {
     formElement.style.top = `${buttonRect.bottom}px`
     formElement.style.left = `${buttonRect.right - formRect.width}px`
 }
-
-// Отслеживание события клика по кнопкам
-document.addEventListener('click', buttonResponse)
