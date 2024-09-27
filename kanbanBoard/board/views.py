@@ -97,8 +97,15 @@ def board_api(request):
         edit_board_form = BoardForm(data, instance=board)
         if edit_board_form.is_valid():
             edit_board_form.save()
-            updated_board = json.loads(serialize('json', [board]))
-            updated_board[0]['fields']['total_users'] = User.objects.filter(task__board__id=board.pk).distinct().count()
+            updated_board = json.loads(serialize('json', [board]))[0]
+
+            updated_board['fields']['total_users'] = User.objects.filter(task__board__id=board.pk).distinct().count()
+
+            columns = Column.objects.filter(pk__in=updated_board['fields']['columns'])
+            updated_board['fields']['columns'] = json.loads(serialize('json', columns))
+
+            tasks = Task.objects.filter(pk__in=updated_board['fields']['tasks'])
+            updated_board['fields']['tasks'] = json.loads(serialize('json', tasks))
 
             return JsonResponse(updated_board, safe=False)
         else:
