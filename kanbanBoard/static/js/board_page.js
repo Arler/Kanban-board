@@ -35,7 +35,7 @@ function sendForm(event) {
             return response.json()
         })
         .then(json => {
-            // -------------------- Добавить функцию обновления доски --------------------
+            update_board(json)
             console.log(json)
         })
         .catch(error => {console.log(error)})
@@ -67,7 +67,32 @@ function get_board_settings_form(pk, func=() => {}, event=null) {
 }
 
 // Функция обновления доски
-function update_board() {}
+function update_board(boardObj) {
+    update_board_columns(boardObj.fields.columns)
+}
+
+// Функция обновления информации о колонках
+function update_board_columns(columns) {
+    const formColumns = document.querySelector('.board-settings__column-container').children
+    const boardColumns = document.querySelector('.column-container').children
+    for (let i = 0; i < columns.length; ++i) {
+        if (i < formColumns.length) {
+            formColumns[i].textContent = columns[i].fields.title
+            boardColumns[i].querySelector('.column__title').textContent = columns[i].fields.title
+        }
+        else {
+            const formColumnHtml = document.querySelector('.board-settings__column').outerHTML
+            document.querySelector('.board-settings__column-container').insertAdjacentHTML('beforeend', formColumnHtml)
+            const newFormColumn = document.querySelector('.board-settings__column-container').lastElementChild
+            newFormColumn.textContent = columns[i].fields.title
+
+            const boardColumnHtml = document.querySelector('.column').outerHTML
+            document.querySelector('.column-container').insertAdjacentHTML('beforeend', boardColumnHtml)
+            const newBoardColumn = document.querySelector('.column-container').lastElementChild
+            newBoardColumn.querySelector('.column__title').textContent = columns[i].fields.title
+        }
+    }
+}
 
 // Функция показа формы настройки доски
 function show_board_settings_form(event) {
