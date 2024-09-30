@@ -46,13 +46,11 @@
   width: 136.33px;
   height: 52px;
   background: #c8e6c9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   color: #f5f5f5;
   font-family: "Alexandria", sans-serif;
   font-size: 18px;
 }
+
 .save-button {
   width: 440px;
   height: 40px;
@@ -81,6 +79,7 @@
   color: #ffffff;
   font-family: Alexandria, sans-serif;
   font-size: 18px;
+  z-index: 3;
 }
 
 .edit-button {
@@ -91,6 +90,7 @@
   color: #ffffff;
   font-family: Alexandria, sans-serif;
   font-size: 18px;
+  z-index: 3;
 }
 
 .active {
