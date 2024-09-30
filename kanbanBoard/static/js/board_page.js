@@ -6,6 +6,9 @@ function buttonResponse(event) {
     if (event.target.classList.contains('board__settings')) {
         show_board_settings_form(event)
     }
+    else if (event.target.classList.contains('board-settings__column')) {
+        show_column_buttons(event)
+    }
 }
 
 // Отслеживание события клика по кнопкам
@@ -124,12 +127,56 @@ function show_board_settings_form(event) {
     }
 }
 
+// Функция показа кнопок взаимодействия с колонками
+function show_column_buttons(event) {
+    let columnEditButton = document.querySelector('.edit-button')
+    let columnDeleteButton = document.querySelector('.delete-button')
+
+    if (columnEditButton) {
+        let buttonRect = event.target.getBoundingClientRect() 
+        if (document.elementFromPoint(buttonRect.x, buttonRect.y + buttonRect.height + 1).classList.contains('edit-button')) {
+            columnEditButton.classList.toggle('active')
+            columnDeleteButton.classList.toggle('active')
+        }
+        else if (!columnEditButton.classList.contains('active')) {
+            columnEditButton.classList.toggle('active')
+            columnDeleteButton.classList.toggle('active')
+        }
+        setup_column_buttons(event.target, columnEditButton, columnDeleteButton)
+    }
+    else {
+        document.body.insertAdjacentHTML('afterbegin', sessionStorage.getItem('board-settings-form-edit-button'))
+        document.body.insertAdjacentHTML('afterbegin', sessionStorage.getItem('board-settings-form-delete-button'))
+        
+        let columnEditButton = document.querySelector('.edit-button')
+        let columnDeleteButton = document.querySelector('.delete-button')
+
+        setup_column_buttons(event.target, columnEditButton, columnDeleteButton)
+        columnEditButton.classList.toggle('active')
+        columnDeleteButton.classList.toggle('active')
+    }
+}
+
 // Функция установки формы настройки доски
 function setup_board_settings_form(formElement, buttonElement) {
     let buttonRect = buttonElement.getBoundingClientRect()
     let formRect = formElement.getBoundingClientRect()
 
     formElement.style.position = 'absolute'
-    formElement.style.top = `${buttonRect.bottom}px`
-    formElement.style.left = `${buttonRect.right - formRect.width}px`
+    formElement.style.top = `${buttonRect.y + buttonRect.height}px`
+    formElement.style.left = `${buttonRect.x + buttonRect.width - formRect.width}px`
+}
+
+// Функция установки кнопок взаимодействия с колонками
+function setup_column_buttons(column, editButton, deleteButton) {
+    const columnRect = column.getBoundingClientRect()
+
+    editButton.style.top = `${columnRect.y + columnRect.height}px`
+    deleteButton.style.top = `${columnRect.y + columnRect.height * 2}px`
+    editButton.style.left = `${columnRect.x}px`
+    deleteButton.style.left = `${columnRect.x}px`
+    
+    editButton.style.position = 'absolute'
+    deleteButton.style.position = 'absolute'
+
 }
