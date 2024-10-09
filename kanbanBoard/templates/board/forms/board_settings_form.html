@@ -16,7 +16,7 @@
     </div>
     <div class="board-settings__column-container">
         {% for column in board.columns.all %}
-            <button type="button" class="board-settings__column">{{ column.title }}</button>
+            <button type="button" class="board-settings__column" value="{{ column.pk }}">{{ column.title }}</button>
         {% endfor %}
     </div>
 </form>
