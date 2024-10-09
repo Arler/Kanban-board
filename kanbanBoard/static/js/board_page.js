@@ -9,6 +9,9 @@ function buttonResponse(event) {
     else if (event.target.classList.contains('board-settings__column')) {
         show_column_buttons(event)
     }
+    else if (event.target.classList.contains('edit-button')) {
+        show_column_settings_form(event)
+    }
 }
 
 // Отслеживание события клика по кнопкам
@@ -67,6 +70,28 @@ function get_board_settings_form(pk, func=() => {}, event=null) {
         func(event)
     })
     .catch(error => {console.log(error)})
+}
+
+// Получение формы редактирования колонки
+function get_column_settings_form(pk, func=() => {}, event=null) {
+    fetch(
+        `${window.location.protocol}//${window.location.host}/api/forms/columnsettings/${pk}/`,
+        {headers: {'X-CSRFToken': getCookie('csrftoken')}},
+    )
+    .then(response => {
+        if (!response.ok) throw new Error('Что-то не так')
+            return response.text()
+    })
+    .then(html => {
+        const style = html.match(/<link.*?>/)[0]
+        const columnSettingsFormHtml = html.replace (/<link.*?>/, ' ')
+
+        sessionStorage.setItem('column-settings-form', columnSettingsFormHtml)
+        sessionStorage.setItem('column-settings-form-style', style)
+        console.log("Форма загружена")
+
+        func(event)
+    })
 }
 
 // Функция обновления доски
@@ -142,6 +167,7 @@ function show_column_buttons(event) {
             columnEditButton.classList.toggle('active')
             columnDeleteButton.classList.toggle('active')
         }
+        document.querySelector('.column-settings').classList.remove('active')
         setup_column_buttons(event.target, columnEditButton, columnDeleteButton)
     }
     else {
@@ -154,6 +180,27 @@ function show_column_buttons(event) {
         setup_column_buttons(event.target, columnEditButton, columnDeleteButton)
         columnEditButton.classList.toggle('active')
         columnDeleteButton.classList.toggle('active')
+    }
+}
+
+// Показ формы настройки колонки
+function show_column_settings_form(event) {
+    let columnSettingsForm = document.querySelector('.column-settings')
+
+    if (columnSettingsForm) {
+        columnSettingsForm.classList.toggle('active')
+        setup_column_settings_form(columnSettingsForm, document.querySelector('.edit-button'))
+    }
+    else {
+        const editButtonRect = event.target.getBoundingClientRect()
+        get_column_settings_form(document.elementFromPoint(editButtonRect.x, editButtonRect.y - 1).getAttribute('value'), () => {
+            document.head.insertAdjacentHTML('beforeend', sessionStorage.getItem('column-settings-form-style'))
+            document.body.insertAdjacentHTML('afterbegin', sessionStorage.getItem('column-settings-form'))
+    
+            let columnSettingsForm = document.querySelector('.column-settings')
+            setup_column_settings_form(columnSettingsForm, event.target)
+            columnSettingsForm.classList.toggle('active')
+        }, event)
     }
 }
 
@@ -178,5 +225,17 @@ function setup_column_buttons(column, editButton, deleteButton) {
     
     editButton.style.position = 'absolute'
     deleteButton.style.position = 'absolute'
+}
 
+// Установка формы настройки колонки
+function setup_column_settings_form(columnForm, editButton) {
+    columnForm.style.position = 'absolute'
+    setTimeout(() => {
+        const editButtonRect = editButton.getBoundingClientRect()
+        const columnFormRect = columnForm.getBoundingClientRect()
+        const column = document.elementFromPoint(editButtonRect.x, editButtonRect.y - 1)
+        columnForm.setAttribute('value', column.getAttribute('value'))
+        columnForm.style.top = `${editButtonRect.top + editButtonRect.height}px`
+        columnForm.style.left = `${editButtonRect.left + editButtonRect.width - columnFormRect.width}px`
+    }, 100)
 }
