@@ -186,3 +186,7 @@ def board(request, pk):
     }
 
     return render(request, template_name='board/board_page.html', context=context)
+
+
+def test(request):
+    return render(request, template_name='Temp/test.html')

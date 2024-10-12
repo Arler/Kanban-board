@@ -11,6 +11,9 @@ class BoardForm(forms.ModelForm):
             "title": "Название",
             "max_tasks": "Макс кол-во задач",
         }
+        widgets = {
+            "title": forms.widgets.TextInput(attrs={"value": " "})
+        }
 
 
 class TaskForm(forms.ModelForm):
