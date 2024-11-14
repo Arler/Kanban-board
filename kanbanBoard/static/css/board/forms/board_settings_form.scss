@@ -1,4 +1,5 @@
 .board-settings {
+    position: absolute;
     visibility: hidden;
     width: 450px;
     height: min-content;
@@ -71,6 +72,7 @@
 }
 .delete-button {
     visibility: hidden;
+    position: absolute;
     width: 136px;
     height: 52px;
     background: #c76034;
@@ -81,6 +83,7 @@
 }
 .edit-button {
     visibility: hidden;
+    position: absolute;
     width: 136px;
     height: 52px;
     background: #91c734;

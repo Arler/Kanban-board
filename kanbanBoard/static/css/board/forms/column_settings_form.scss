@@ -1,5 +1,6 @@
 .column-settings {
     visibility: hidden;
+    position: absolute;
     width: 450px;
     height: min-content;
     z-index: 4;
@@ -48,5 +49,5 @@
 }
 
 .active {
-    visibility: visible !important;
+    visibility: visible;
 }
