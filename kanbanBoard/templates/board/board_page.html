@@ -4,10 +4,17 @@
 
 {% block title %}{{ board.title }}{% endblock title %}
 
-{% block link_css %}<link rel="stylesheet" href="{% static 'css/board/board_page.css' %}"></link>{% endblock link_css %}
+{% block link_css %}
+    <link rel="stylesheet" href="{% static 'css/board/board_page.css' %}"></link>
+    <link id="board-settings-style" rel="stylesheet" href="{% static "css/board/forms/board_settings_form.css" %}">
+    <link id="column-settings-style" rel="stylesheet" href="{% static "css/board/forms/column_settings_form.css" %}">
+{% endblock link_css %}
+
 
 {% block content %}
     <div class="container">
+        {% include "board/forms/board_settings_form.html" %}
+        {% include "board/forms/column_settings_form.html" %}
         <div class="board">
             <div class="board__settings-buttons">
                 <span class="board__add-task">+ Добавить задачу</span>

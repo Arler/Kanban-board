@@ -1,8 +1,6 @@
-{% load static %}
-<link id="column-settings-style" rel="stylesheet" href="{% static "css/board/forms/column_settings_form.css" %}">
-<form class="column-settings", value="{{ pk }}">
+<form class="column-settings", value="">
     <div class="column-settings__inputs-container">
-        {% for field in form %}
+        {% for field in column_form %}
             <div class="column-settings__input-line">
                 <div class="column-settings__input-line__label-wrap">
                     {{ field.label_tag }}
