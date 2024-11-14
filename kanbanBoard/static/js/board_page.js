@@ -1,4 +1,5 @@
-import {getCookie, hideForm} from "./default.js";
+import {getCookie, hideAllForm, hideForm} from "./default.js";
+import {ref, createApp} from "./vue.esm-browser.prod.js";
 
 
 // Функция обработки нажатия кнопок
@@ -48,52 +49,6 @@ function sendForm(event) {
     }
 }
 
-// Функция получения формы изменения настроек доски
-function get_board_settings_form(pk, func=() => {}, event=null) {
-    fetch(
-        `${window.location.protocol}//${window.location.host}/api/forms/boardsettings/${pk}/`,
-        {headers: {'X-CSRFToken': getCookie('csrftoken')}}
-    )
-    .then(response => {
-        if (!response.ok) throw new Error('Что-то не так')
-        return response.text()
-    })
-    .then(html => {
-        let style = html.match(/<link.*?>/)[0]
-        let buttons = html.match(/^<button.*?>$/gm)
-        let boardSettingsFormHtml = html.replace(/<link.*?>/, ' ').replace(/^<button.*?>$/gm, ' ')
-
-        sessionStorage.setItem('board-settings-form', boardSettingsFormHtml)
-        sessionStorage.setItem('board-settings-form-style', style)
-        sessionStorage.setItem('board-settings-form-delete-button', buttons[0])
-        sessionStorage.setItem('board-settings-form-edit-button', buttons[1])
-        func(event)
-    })
-    .catch(error => {console.log(error)})
-}
-
-// Получение формы редактирования колонки
-function get_column_settings_form(pk, func=() => {}, event=null) {
-    fetch(
-        `${window.location.protocol}//${window.location.host}/api/forms/columnsettings/${pk}/`,
-        {headers: {'X-CSRFToken': getCookie('csrftoken')}},
-    )
-    .then(response => {
-        if (!response.ok) throw new Error('Что-то не так')
-            return response.text()
-    })
-    .then(html => {
-        const style = html.match(/<link.*?>/)[0]
-        const columnSettingsFormHtml = html.replace (/<link.*?>/, ' ')
-
-        sessionStorage.setItem('column-settings-form', columnSettingsFormHtml)
-        sessionStorage.setItem('column-settings-form-style', style)
-        console.log("Форма загружена")
-
-        func(event)
-    })
-}
-
 // Функция обновления доски
 function update_board(boardObj) {
     update_board_columns(boardObj.fields.columns)
@@ -126,30 +81,9 @@ function update_board_columns(columns) {
 function show_board_settings_form(event) {
     let boardSettingsForm = document.querySelector(`.board-settings`)
 
-    if (boardSettingsForm) {
-        if (boardSettingsForm.classList.contains('active')) {
-            boardSettingsForm.classList.remove('active')
-        }
-        else if (!boardSettingsForm.classList.contains('active')) {
-            hideForm()
-            boardSettingsForm.classList.toggle('active')
-            setup_board_settings_form(boardSettingsForm, event.target)
-        }
-    }
-    else {
-        hideForm()
-        get_board_settings_form(document.URL.match(/(\d+)(\/)?$/)[0], () => {
-            document.querySelector('.board').insertAdjacentHTML('afterbegin', sessionStorage.getItem('board-settings-form'))
-            let boardSettingsForm = document.querySelector(`.board-settings`)
-
-            if (!document.querySelector('#board-settings-style')) {
-                document.head.insertAdjacentHTML("beforeend", sessionStorage.getItem('board-settings-form-style'))
-            }
-            
-            setup_board_settings_form(boardSettingsForm, event.target)
-            boardSettingsForm.classList.toggle('active')
-        })
-    }
+    setup_board_settings_form(boardSettingsForm, event.target)
+    if (boardSettingsForm.classList.contains('active')) hideAllForm()
+    else boardSettingsForm.classList.toggle('active')
 }
 
 // Функция показа кнопок взаимодействия с колонками
@@ -187,21 +121,8 @@ function show_column_buttons(event) {
 function show_column_settings_form(event) {
     let columnSettingsForm = document.querySelector('.column-settings')
 
-    if (columnSettingsForm) {
-        columnSettingsForm.classList.toggle('active')
-        setup_column_settings_form(columnSettingsForm, document.querySelector('.edit-button'))
-    }
-    else {
-        const editButtonRect = event.target.getBoundingClientRect()
-        get_column_settings_form(document.elementFromPoint(editButtonRect.x, editButtonRect.y - 1).getAttribute('value'), () => {
-            document.head.insertAdjacentHTML('beforeend', sessionStorage.getItem('column-settings-form-style'))
-            document.body.insertAdjacentHTML('afterbegin', sessionStorage.getItem('column-settings-form'))
-    
-            let columnSettingsForm = document.querySelector('.column-settings')
-            setup_column_settings_form(columnSettingsForm, event.target)
-            columnSettingsForm.classList.toggle('active')
-        }, event)
-    }
+    columnSettingsForm.classList.toggle('active')
+    setup_column_settings_form(columnSettingsForm, document.querySelector('.edit-button'))
 }
 
 // Функция установки формы настройки доски
@@ -209,7 +130,6 @@ function setup_board_settings_form(formElement, buttonElement) {
     let buttonRect = buttonElement.getBoundingClientRect()
     let formRect = formElement.getBoundingClientRect()
 
-    formElement.style.position = 'absolute'
     formElement.style.top = `${buttonRect.y + buttonRect.height}px`
     formElement.style.left = `${buttonRect.x + buttonRect.width - formRect.width}px`
 }
@@ -222,20 +142,14 @@ function setup_column_buttons(column, editButton, deleteButton) {
     deleteButton.style.top = `${columnRect.y + columnRect.height * 2}px`
     editButton.style.left = `${columnRect.x}px`
     deleteButton.style.left = `${columnRect.x}px`
-    
-    editButton.style.position = 'absolute'
-    deleteButton.style.position = 'absolute'
 }
 
 // Установка формы настройки колонки
 function setup_column_settings_form(columnForm, editButton) {
-    columnForm.style.position = 'absolute'
-    setTimeout(() => {
-        const editButtonRect = editButton.getBoundingClientRect()
-        const columnFormRect = columnForm.getBoundingClientRect()
-        const column = document.elementFromPoint(editButtonRect.x, editButtonRect.y - 1)
-        columnForm.setAttribute('value', column.getAttribute('value'))
-        columnForm.style.top = `${editButtonRect.top + editButtonRect.height}px`
-        columnForm.style.left = `${editButtonRect.left + editButtonRect.width - columnFormRect.width}px`
-    }, 100)
+    const editButtonRect = editButton.getBoundingClientRect()
+    const columnFormRect = columnForm.getBoundingClientRect()
+    const column = document.elementFromPoint(editButtonRect.x, editButtonRect.y - 1)
+    columnForm.setAttribute('value', column.getAttribute('value'))
+    columnForm.style.top = `${editButtonRect.top + editButtonRect.height}px`
+    columnForm.style.left = `${editButtonRect.left + editButtonRect.width - columnFormRect.width}px`
 }
