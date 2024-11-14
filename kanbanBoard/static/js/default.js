@@ -21,3 +21,11 @@ export function hideForm() {
         activeForm.classList.remove('active')
     }
 }
+
+export function hideAllForm() {
+    let activeForm = document.querySelector('.active')
+    while (activeForm) {
+        activeForm.classList.remove('active')
+        activeForm = document.querySelector('.active')
+    }
+}
