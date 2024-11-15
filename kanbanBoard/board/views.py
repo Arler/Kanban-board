@@ -120,7 +120,7 @@ def board_api(request):
         else:
             return HttpResponseBadRequest('Wrong id')
         
-def colimn_api(request):
+def column_api(request):
     data = json.loads(request.body.decode('utf-8'))
     if request.method == "POST":
         # Создание новой колонки
@@ -129,16 +129,19 @@ def colimn_api(request):
         if new_column_form.is_valid():
             new_column = new_column_form.save()
             new_column = json.loads(serialize('json', [new_column]))
+
             return JsonResponse(new_column, safe=False)
         else:
             return JsonResponse({'errors': new_column_form.errors}, status=400)
     elif request.method =="PUT":
         # Редактирование существующей колонки
         column = Column.objects.get(pk=data.get('id', None))
-        edit_column_form = BoardForm(data, instance=column)
+        edit_column_form = ColumnForm(data, instance=column)
         if edit_column_form.is_valid():
             updated_column = edit_column_form.save()
             updated_column = json.loads(serialize('json', [updated_column]))
+
+            return JsonResponse(updated_column, safe=False)
         else:
             return JsonResponse({'errors': edit_column_form.errors}, status=400)
     elif request.method == "DELETE":
