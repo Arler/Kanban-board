@@ -51,6 +51,28 @@
         font-family: "Alexandria", sans-serif;
         font-size: 18px;
     }
+    &__delete-button {
+        visibility: hidden;
+        position: absolute;
+        width: 136px;
+        height: 52px;
+        background: #c76034;
+        color: #ffffff;
+        font-family: Alexandria, sans-serif;
+        font-size: 18px;
+        z-index: 3;
+    }
+    &__edit-button {
+        visibility: hidden;
+        position: absolute;
+        width: 136px;
+        height: 52px;
+        background: #91c734;
+        color: #ffffff;
+        font-family: Alexandria, sans-serif;
+        font-size: 18px;
+        z-index: 3;
+    }
 }
 .save-button {
     width: 440px;
@@ -69,28 +91,6 @@
     font-family: "Alexandria", sans-serif;
     font-size: 14px;
     color: #ffffff;
-}
-.delete-button {
-    visibility: hidden;
-    position: absolute;
-    width: 136px;
-    height: 52px;
-    background: #c76034;
-    color: #ffffff;
-    font-family: Alexandria, sans-serif;
-    font-size: 18px;
-    z-index: 3;
-}
-.edit-button {
-    visibility: hidden;
-    position: absolute;
-    width: 136px;
-    height: 52px;
-    background: #91c734;
-    color: #ffffff;
-    font-family: Alexandria, sans-serif;
-    font-size: 18px;
-    z-index: 3;
 }
 .active {
     visibility: visible;
