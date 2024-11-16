@@ -10,8 +10,11 @@ function buttonResponse(event) {
     else if (event.target.classList.contains('board-settings__column')) {
         show_column_buttons(event)
     }
-    else if (event.target.classList.contains('edit-button')) {
+    else if (event.target.classList.contains('board-settings__edit-button')) {
         show_column_settings_form(event)
+    }
+    else if (event.target.classList.contains('board-settings__delete-button')) {
+        delete_column(event)
     }
 }
 
@@ -20,6 +23,7 @@ document.addEventListener('click', buttonResponse)
 // Отслеживание события отправки формы
 document.addEventListener("submit", sendForm)
 
+// Функция отправки форм редактирования
 function sendForm(event) {
     let form = event.target
     let formName = form.getAttribute('name')
@@ -64,6 +68,27 @@ function sendForm(event) {
     }
 }
 
+// Функция удаления колонки
+async function delete_column(event) {
+    const columnId = event.target.getAttribute('value')
+
+    const response = await fetch(
+        `${window.location.protocol}//${window.location.host}/api/column/`,
+        {
+            method: "DELETE",
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({id: columnId}),
+        }
+    )
+    if (response.ok) {
+        document.querySelector(`.column[id="column-${columnId}"]`).remove()
+        document.querySelector(`.board-settings__column[value="${columnId}"]`).remove()
+    }
+}
+
 // Функция обновления информации о колонках
 function update_board_columns(column) {
     let formColumn = document.querySelector(`.board-settings__column[value="${column.pk}"]`)
@@ -84,11 +109,11 @@ function show_board_settings_form(event) {
 
 // Функция показа кнопок взаимодействия с колонками
 function show_column_buttons(event) {
-    let columnEditButton = document.querySelector('.edit-button')
-    let columnDeleteButton = document.querySelector('.delete-button')
+    let columnEditButton = document.querySelector('.board-settings__edit-button')
+    let columnDeleteButton = document.querySelector('.board-settings__delete-button')
 
     let buttonRect = event.target.getBoundingClientRect() 
-    if (document.elementFromPoint(buttonRect.x, buttonRect.y + buttonRect.height + 1).classList.contains('edit-button')) {
+    if (document.elementFromPoint(buttonRect.x, buttonRect.y + buttonRect.height + 1).classList.contains('board-settings__edit-button')) {
         columnEditButton.classList.toggle('active')
         columnDeleteButton.classList.toggle('active')
     }
@@ -105,7 +130,7 @@ function show_column_settings_form(event) {
     let columnSettingsForm = document.querySelector('.column-settings')
 
     columnSettingsForm.classList.toggle('active')
-    setup_column_settings_form(columnSettingsForm, document.querySelector('.edit-button'))
+    setup_column_settings_form(columnSettingsForm, document.querySelector('.board-settings__edit-button'))
 }
 
 // Функция установки формы настройки доски
