@@ -80,8 +80,8 @@ def board_api(request):
 
         if new_board_form.is_valid():
             new_board = new_board_form.save()
-            new_board = json.loads(serialize('json', [new_board]))
-            new_board[0]['fields']['total_users'] = User.objects.filter(task__board__id=new_board[0]['pk']).distinct().count()
+            new_board = json.loads(serialize('json', [new_board]))[0]
+            new_board['fields']['total_users'] = User.objects.filter(task__board__id=new_board[0]['pk']).distinct().count()
 
             return JsonResponse(new_board, safe=False)
         else:
@@ -128,7 +128,9 @@ def column_api(request):
 
         if new_column_form.is_valid():
             new_column = new_column_form.save()
-            new_column = json.loads(serialize('json', [new_column]))
+            board = Board.objects.get(pk=data.get('board-id', None))
+            board.columns.add(new_column)
+            new_column = json.loads(serialize('json', [new_column]))[0]
 
             return JsonResponse(new_column, safe=False)
         else:
@@ -139,7 +141,7 @@ def column_api(request):
         edit_column_form = ColumnForm(data, instance=column)
         if edit_column_form.is_valid():
             updated_column = edit_column_form.save()
-            updated_column = json.loads(serialize('json', [updated_column]))
+            updated_column = json.loads(serialize('json', [updated_column]))[0]
 
             return JsonResponse(updated_column, safe=False)
         else:
