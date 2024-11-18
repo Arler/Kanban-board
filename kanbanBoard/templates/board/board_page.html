@@ -15,7 +15,7 @@
     <div class="container">
         {% include "board/forms/board_settings_form.html" %}
         {% include "board/forms/column_settings_form.html" %}
-        <div class="board">
+        <div class="board" id="{{ board.pk }}">
             <div class="board__settings-buttons">
                 <span class="board__add-task">+ Добавить задачу</span>
                 <span class="board__title">{{ board.title }}</span>

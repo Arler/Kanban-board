@@ -9,8 +9,8 @@
                 {{ field }}
             </div>
         {% endfor %}
-        <button class="save-button" type="submit">Сохранить</button>
-        <button class="new-column" type="button">Добавить новую колонку</button>
+        <button class="board-settings__save-button" type="submit">Сохранить</button>
+        <button class="board-settings__new-column" type="button">Добавить новую колонку</button>
     </div>
     <div class="board-settings__column-container">
         {% for column in board.columns.all %}
