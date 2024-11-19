@@ -44,3 +44,11 @@ def get_task_description(request, pk):
     }
 
     return render(request, template_name="board/task_description.html", context=context)
+
+def get_board_html(request, pk):
+    board = Board.objects.get(pk=pk)
+    context = {
+        "board": board
+    }
+
+    return render(request, template_name="board/board.html", context=context)
