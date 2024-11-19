@@ -23,7 +23,7 @@
             </div>
             <div class="column-container">
             {% for column in board.columns.all %}
-                <div class="column" id="column-{{ column.pk }}">
+                <div class="column" id="column-{{ column.pk }}" row-number="{{ column.row_number }}">
                     <div class="column__title-block">
                         <span class="column__title">{{ column.title }}</span>
                     </div>

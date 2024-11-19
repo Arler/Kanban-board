@@ -28,7 +28,7 @@ document.addEventListener('click', buttonResponse)
 // Отслеживание события отправки формы
 document.addEventListener("submit", sendForm)
 
-// Функция отправки форм редактирования
+// Функция отправки форм создания и редактирования
 async function sendForm(event) {
     let form = event.target
     let formName = form.getAttribute('name')
@@ -75,6 +75,7 @@ async function sendForm(event) {
         else {
             const formData = Object.fromEntries(new FormData(form))
             formData['board-id'] = BOARDID
+            formData['row_number'] = parseInt(document.querySelector('.column:last-of-type').getAttribute('row-number')) + 1
             const response = await fetch(
                 `${window.location.protocol}//${window.location.host}/api/column/`,
                 {
@@ -87,7 +88,6 @@ async function sendForm(event) {
                 }
             )
             const newColumn = await response.json()
-            console.log(newColumn)
             create_new_column(newColumn)
         }
     }
@@ -110,6 +110,7 @@ function create_new_column(newColumn) {
     }
     newColumnNode.setAttribute('id', `column-${newColumn.pk}`)
     newColumnNode.querySelector('.column__title').innerText = newColumn.fields.title
+    newColumnNode.setAttribute('row-number', newColumn.fields.row_number)
     document.querySelector('.column-container').insertAdjacentElement('beforeend', newColumnNode)
 
     //Добавление новой колонки в меню редактирования доски
@@ -183,7 +184,7 @@ function show_column_settings_form(event) {
     let columnSettingsForm = document.querySelector('.column-settings')
 
     columnSettingsForm.classList.toggle('active')
-    setup_column_settings_form(columnSettingsForm, document.querySelector('.board-settings__edit-button'))
+    setup_column_settings_form(columnSettingsForm, event.target, undefined, undefined)
 }
 
 // Функция установки формы настройки доски
@@ -205,12 +206,15 @@ function setup_column_buttons(column, editButton, deleteButton) {
     deleteButton.style.left = `${columnRect.x}px`
 
     editButton.setAttribute('value', column.getAttribute('value'))
+    editButton.setAttribute('row-number', column.getAttribute('row-number'))
     deleteButton.setAttribute('value', column.getAttribute('value'))
+    deleteButton.setAttribute('row-number', column.getAttribute('row-number'))
 }
 
 // Установка формы настройки колонки
-function setup_column_settings_form(columnForm, editButton=null, newColumnButton=null, newColumn=true) {
+function setup_column_settings_form(columnForm, editButton=null, newColumnButton=null, newColumn=false) {
     if (newColumn) {
+        // Установка формы новой колонки
         columnForm.setAttribute('value', '')
         columnForm.querySelector('input[name="id"]').setAttribute('value', '')
         const newColumnButtonRect = newColumnButton.getBoundingClientRect()
@@ -219,11 +223,14 @@ function setup_column_settings_form(columnForm, editButton=null, newColumnButton
         columnForm.style.left = `${newColumnButtonRect.left + newColumnButtonRect.width - columnFormRect.width}px`
     }
     else {
+        // Установка формы редактирования существующей колонки
         const editButtonRect = editButton.getBoundingClientRect()
         const columnFormRect = columnForm.getBoundingClientRect()
         const columnId = editButton.getAttribute('value')
+        const columnRowNumber = editButton.getAttribute('row-number')
         columnForm.setAttribute('value', columnId)
         columnForm.querySelector('input[name="id"]').setAttribute('value', columnId)
+        columnForm.querySelector('input[name="row_number"]').setAttribute('value', columnRowNumber)
         columnForm.style.top = `${editButtonRect.top + editButtonRect.height + window.scrollY}px`
         columnForm.style.left = `${editButtonRect.left + editButtonRect.width - columnFormRect.width}px`
     }
