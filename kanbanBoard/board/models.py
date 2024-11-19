@@ -26,6 +26,7 @@ class Task(models.Model):
 
 class Column(models.Model):
     title = models.CharField(max_length=255)
+    row_number = models.IntegerField()
 
     def __str__(self):
         return self.title

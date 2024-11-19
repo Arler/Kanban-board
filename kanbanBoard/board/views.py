@@ -75,13 +75,18 @@ def task_api(request):
 def board_api(request):
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
-        data['owner'] = request.user.id
+        data['owner'] = request.user
         new_board_form = BoardForm(data)
 
         if new_board_form.is_valid():
             new_board = new_board_form.save()
+
+            for _ in range(3):
+                new_column = Column.objects.create(title="New column", row_number=_)
+                new_board.columns.add(new_column)
+
             new_board = json.loads(serialize('json', [new_board]))[0]
-            new_board['fields']['total_users'] = User.objects.filter(task__board__id=new_board[0]['pk']).distinct().count()
+            new_board['fields']['total_users'] = User.objects.filter(task__board__id=new_board['pk']).distinct().count()
 
             return JsonResponse(new_board, safe=False)
         else:
@@ -90,7 +95,7 @@ def board_api(request):
         data = json.loads(request.body.decode('utf-8'))
         board = Board.objects.get(pk=data.get('id'))
 
-        data['owner'] = request.user.id
+        data['owner'] = request.user
         if not data.get('title', False):
             data['title'] = board.title
 
@@ -180,7 +185,7 @@ def main(request):
 @ensure_csrf_cookie
 def board(request, pk):
     # Рендерит страницу с доской
-    board = Board.objects.filter(owner=request.user, pk=pk)[0]
+    board = Board.objects.get(owner=request.user, pk=pk)
     
     context = {
         "board": board,
