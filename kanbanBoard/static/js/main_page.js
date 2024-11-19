@@ -44,6 +44,7 @@ function setup_form_nearby_board(formElement, boardElement) {
 // Функция установки формы для создания новой доски рядом с header
 function setup_form_nearby_header(formElement, headerElement) {
     let headerRect = headerElement.getBoundingClientRect()
+    formElement.setAttribute('name', 'new-board')
 
     formElement.style.position = 'absolute'
     formElement.style.top = `${headerRect.bottom}px`
@@ -124,12 +125,12 @@ function deleteBoard(event) {
         }
     )
     .then(response => {
-        if (!response.ok) throw new Error('Что-то не так')
         return response.text()
     })
     .then(data => {
         board.remove()
-        document.querySelector(`.board-form[value="${board_id}"]`).remove()
+        let boardEditForm = document.querySelector(`.board-form[value="${board_id}"]`)
+        if (boardEditForm) boardEditForm.remove()
     })
     .catch(error => {console.log(error)})
 }
@@ -169,7 +170,7 @@ function add_new_board(data) {
     let container = document.querySelector('.container')
 
     fetch(
-        `${window.location.protocol}//${window.location.host}/board/api/board`,
+        `${window.location.protocol}//${window.location.host}/api/elements/board/${data.pk}/`,
         {
             headers: {
                 csrftoken: getCookie('csrftoken')
@@ -177,7 +178,6 @@ function add_new_board(data) {
         }
     )
     .then(response => {
-        if (!response.ok) throw new Error('Что-то не так')
         return response.text()
     })
     .then(html => {
@@ -194,15 +194,6 @@ function add_new_board(data) {
         document.body.appendChild(container)
         container.insertAdjacentHTML('beforeend', sessionStorage.getItem('board'))
     }
-
-    let boards = document.querySelectorAll('.board')
-    let new_board = boards[boards.length - 1]
-
-    new_board.setAttribute('id', data.pk)
-    new_board.querySelector('.board__title').innerHTML = data.fields.title
-    new_board.querySelector('.board__info_item_tasks').innerHTML = data.fields.tasks.length
-    new_board.querySelector('.board__info_item_columns').innerHTML = data.fields.columns.length
-    new_board.querySelector('.board__info_item_total-users').innerHTML = data.fields.total_users
 }
 
 // Функция отправки формы
@@ -228,7 +219,7 @@ function sendForm(event) {
             return response.json()
         })
         .then(json => {
-            add_new_board(json[0])
+            add_new_board(json)
         })
         .catch(error => {console.log(error)})
     }
@@ -249,7 +240,7 @@ function sendForm(event) {
             return response.json()
         })
         .then(json => {
-            updateBoard(json[0])
+            updateBoard(json)
         })
         .catch(error => {console.log(error)})
     }
