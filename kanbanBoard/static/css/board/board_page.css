@@ -153,6 +153,7 @@ body {
   background: #388e3c;
 }
 .column__title-block {
+  cursor: move;
   width: 200px;
   height: 60px;
   background: #942222;
@@ -193,4 +194,12 @@ body {
   color: #757575;
   font-family: Alexandria, sans-serif;
   font-size: 16px;
+}
+
+.drag-over {
+  border: 3px dotted #666;
+}
+
+.selected {
+  opacity: 0.4;
 }

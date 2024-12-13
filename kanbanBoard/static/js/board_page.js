@@ -3,6 +3,9 @@ import {ref, createApp} from "./vue.esm-browser.prod.js";
 
 
 const BOARDID = document.querySelector('.board').getAttribute('id')
+let columns = document.querySelectorAll('.column')
+
+let dragSrcEl = ''
 
 // Функция обработки нажатия кнопок
 function buttonResponse(event) {
@@ -27,6 +30,71 @@ function buttonResponse(event) {
 document.addEventListener('click', buttonResponse)
 // Отслеживание события отправки формы
 document.addEventListener("submit", sendForm)
+// Отслеживание перемещения колонок
+columns.forEach((column) => {
+    column.ondragover = dragOver;
+    column.ondragstart = drag;
+    column.ondrop = drop;
+    column.ondragend = dragEnd;
+    column.ondragenter = dragEnter;
+    column.ondragexit = dragExit;
+});
+
+function dragOver(event) {
+    event.preventDefault();
+}
+
+function drag(event) {
+    event.dataTransfer.setData('id', event.target.id);
+    event.target.classList.add('selected');
+}
+
+function dragEnd(event) {
+    event.target.classList.remove('selected');
+}
+
+function dragEnter(event) {
+    if (event.target.closest('.column')) {
+        event.target.closest('.column').classList.add('drag-over')
+    }
+}
+
+function dragExit(event) {
+    event.target.closest('.column').classList.remove('drag-over')
+}
+
+function drop(event) {
+    if (event.target.closest('.column')) {
+        let dragColumnId = event.dataTransfer.getData('id');
+        let dropColumnId = event.target.closest('.column').id;
+        if (dropColumnId != dragColumnId) {
+            let dragRowNumber = document.querySelector(`#${dragColumnId}`).getAttribute('row-number')
+            let dropRowNumber = document.querySelector(`#${dropColumnId}`).getAttribute('row-number')
+            // изменение порядкового номера у колонки с дропом
+            event.target.closest('.column').setAttribute('row-number', dragRowNumber);
+            // изменение порядкового номера у перетаскиваемой колонки
+            document.querySelector(`#${dragColumnId}`).setAttribute('row-number', dropRowNumber);
+            // Функция обновления порядка колонок
+            sort_columns();
+            let colContainer = document.querySelector('.column-container');
+            colContainer.childNodes.forEach((column) => {column.remove()})
+            columns.forEach((column) => {
+                colContainer.append(column)
+            })
+            event.target.closest('.column').classList.remove('drag-over')
+        }
+    }
+
+}
+
+function sort_columns() {
+    columns = document.querySelectorAll('.column')
+    columns = Array.from(columns)
+    columns.sort((a, b) => {
+        if (parseInt(a.getAttribute('row-number')) < parseInt(b.getAttribute('row-number'))) return -1;
+        else return 1;
+    })
+}
 
 // Функция отправки форм создания и редактирования
 async function sendForm(event) {
@@ -93,7 +161,7 @@ async function sendForm(event) {
     }
 }
 
-// Функция создания новой колонки
+// Показ формы создания новой колонки
 function show_create_column_form(event) {
     const createColumnForm = document.querySelector('.column-settings')
     setup_column_settings_form(createColumnForm, undefined, event.target, true)
@@ -103,21 +171,24 @@ function show_create_column_form(event) {
 // Функция создания новой колонки
 function create_new_column(newColumn) {
     //Добавление новой колонки на доску
-    let newColumnNode = document.querySelector('.column').cloneNode(true)
-    let tasksContainer = newColumnNode.querySelector('.column__tasks-container')
+    let newColumnNode = document.querySelector('.column').cloneNode(true);
+    let tasksContainer = newColumnNode.querySelector('.column__tasks-container');
     while (tasksContainer.children.length > 0) {
-        tasksContainer.children[0].remove()
+        tasksContainer.children[0].remove();
     }
-    newColumnNode.setAttribute('id', `column-${newColumn.pk}`)
-    newColumnNode.querySelector('.column__title').innerText = newColumn.fields.title
-    newColumnNode.setAttribute('row-number', newColumn.fields.row_number)
-    document.querySelector('.column-container').insertAdjacentElement('beforeend', newColumnNode)
+    newColumnNode.setAttribute('id', `column-${newColumn.pk}`);
+    newColumnNode.querySelector('.column__title').innerText = newColumn.fields.title;
+    newColumnNode.setAttribute('row-number', newColumn.fields.row_number);
+    newColumnNode.ondragover = dragOver;
+    newColumnNode.ondragstart = drag;
+    newColumnNode.ondrop = drop;
+    document.querySelector('.column-container').insertAdjacentElement('beforeend', newColumnNode);
 
     //Добавление новой колонки в меню редактирования доски
-    newColumnNode = document.querySelector('.board-settings__column').cloneNode(true)
-    newColumnNode.setAttribute('value', newColumn.pk)
-    newColumnNode.innerText = newColumn.fields.title
-    document.querySelector('.board-settings__column-container').insertAdjacentElement('beforeend', newColumnNode)
+    newColumnNode = document.querySelector('.board-settings__column').cloneNode(true);
+    newColumnNode.setAttribute('value', newColumn.pk);
+    newColumnNode.innerText = newColumn.fields.title;
+    document.querySelector('.board-settings__column-container').insertAdjacentElement('beforeend', newColumnNode);
 }
 
 // Функция удаления колонки
