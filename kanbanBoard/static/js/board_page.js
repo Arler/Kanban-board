@@ -63,7 +63,7 @@ function dragExit(event) {
     event.target.closest('.column').classList.remove('drag-over')
 }
 
-function drop(event) {
+async function drop(event) {
     if (event.target.closest('.column')) {
         const dragColumnId = event.dataTransfer.getData('id');
         const dropColumnId = event.target.closest('.column').id;
@@ -81,6 +81,38 @@ function drop(event) {
             columnContainer.insertBefore(dropColumn, dragColumn);
             columnContainer.insertBefore(dragColumn, nextSibling);
             event.target.closest('.column').classList.remove('drag-over');
+
+            // Отправка запроса на изменение порядкового номера колонок
+            let response = await fetch(
+                `${window.location.protocol}//${window.location.host}/api/column/`,
+                {
+                    method: "PUT",
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: dragColumnId.split('-')[1],
+                        row_number: dragColumn.getAttribute('row-number'),
+                        title: dragColumn.querySelector('.column__title').innerText
+                    })
+                });
+            if (!response.ok) console.error(response);
+            response = await fetch(
+                `${window.location.protocol}//${window.location.host}/api/column/`,
+                {
+                    method: "PUT",
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        id: dropColumnId.split('-')[1],
+                        row_number: dropColumn.getAttribute('row-number'),
+                        title: dropColumn.querySelector('.column__title').innerText
+                    })
+                });
+            if (!response.ok) console.error(response);
         }
     }
 }
@@ -89,8 +121,8 @@ function drop(event) {
 
 // Функция отправки форм создания и редактирования
 async function sendForm(event) {
-    let form = event.target
-    let formName = form.getAttribute('name')
+    const form = event.target
+    const formName = form.getAttribute('name')
 
     event.preventDefault()
 
@@ -112,6 +144,7 @@ async function sendForm(event) {
         })
         .catch(error => {console.log(error)})
     }
+    // Обработка запроса создания и редактирования колонки
     else if (formName == "column-settings") {
         if (form.querySelector('input[name="id"]').getAttribute('value') != '') {
             fetch(
