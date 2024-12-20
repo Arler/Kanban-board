@@ -1,6 +1,6 @@
-@import "default_forms.scss";
-
 .task-form {
+    max-width: 450px;
+    position: absolute;
     visibility: hidden;
     display: flex;
     justify-content: space-between;
@@ -10,54 +10,75 @@
     padding: 10px;
     gap: 10px;
     z-index: 2;
-}
-.input-line {
-    display: inline-flex;
-    
-    input {
-        width: 280px;
-        height: 50px;
-        border-radius: 4px;
-        background: #ffffff;
-        font-size: 16px;
+    &__input-line {
+        display: inline-flex;
+        
+        input {
+            width: 280px;
+            height: 50px;
+            border-radius: 4px;
+            background: #ffffff;
+            font-size: 16px;
+        }
+        select {
+            width: 280px;
+            height: 50px;
+            border-radius: 4px;
+            background: #ffffff;
+            font-size: 16px;
+        }
+        textarea {
+            width: 100%;
+            max-width: 100%;
+            resize: vertical;
+            height: 50px;
+        }
+        &__label-wrap {
+            min-width: 150px;
+            width: 150px;
+            height: 52px;
+            background: #c8e6c9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #f5f5f5;
+            font-family: "Alexandria", sans-serif;
+            font-size: 18px;
+        }
     }
-    &__label-wrap {
-        width: 150px;
-        height: 52px;
-        background: #c8e6c9;
+    &__buttons {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        color: #f5f5f5;
-        font-family: "Alexandria", sans-serif;
-        font-size: 18px;
+        justify-content: space-between;
+        flex-direction: column;
+        gap: 10px;
+        
+        &__button-save {
+            width: 430px;
+            height: 50px;
+            background: #91C734;
+            border-radius: 8px;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 17px;
+            color: #ffffff;
+        }
+        &__button-delete {
+            width: 430px;
+            height: 50px;
+            background: #C76034;
+            border-radius: 8px;
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            font-size: 17px;
+            color: #ffffff;
+        }
+    }
+    &__inputs-container {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
     }
 }
-.buttons {
-    display: flex;
-    justify-content: space-between;
-    flex-direction: column;
-    gap: 10px;
-    
-    &__button-save {
-        width: 430px;
-        height: 50px;
-        background: #91C734;
-        border-radius: 8px;
-        font-family: 'Helvetica', 'Arial', sans-serif;
-        font-size: 17px;
-        color: #ffffff;
-    }
-    &__button-delete {
-        width: 430px;
-        height: 50px;
-        background: #C76034;
-        border-radius: 8px;
-        font-family: 'Helvetica', 'Arial', sans-serif;
-        font-size: 17px;
-        color: #ffffff;
-    }
-}
-.inputs-container {
+
+.active {
+    visibility: visible;
 }

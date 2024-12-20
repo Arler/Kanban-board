@@ -186,12 +186,15 @@ def main(request):
 def board(request, pk):
     # Рендерит страницу с доской
     board = Board.objects.get(owner=request.user, pk=pk)
+    columns = Column.objects.filter(board__id=board.pk)
+    task_form = TaskForm()
+    task_form.fields['column'].queryset = columns
     
     context = {
         "board": board,
         "tasks": board.tasks.all(),
         "board_form": BoardForm(),
-        "task_form": TaskForm(),
+        "task_form": task_form,
         "column_form": ColumnForm(),
     }
 

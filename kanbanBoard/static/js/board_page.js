@@ -5,6 +5,7 @@ import {ref, createApp} from "./vue.esm-browser.prod.js";
 const BOARDID = document.querySelector('.board').getAttribute('id')
 let columns = document.querySelectorAll('.column')
 
+
 // Функция обработки нажатия кнопок
 function buttonResponse(event) {
     if (event.target.classList.contains('board__settings')) {
@@ -21,6 +22,15 @@ function buttonResponse(event) {
     }
     else if (event.target.classList.contains('board-settings__new-column')) {
         show_create_column_form(event)
+    }
+    else if (event.target.classList.contains('board__add-task')) {
+        show_create_task_form(event)
+    }
+    else if (event.target.classList.contains('task-description__settings-button')) {
+        show_task_settings_form(event)
+    }
+    else if (event.target.classList.contains('task')) {
+        show_task_description(event)
     }
 }
 
@@ -185,13 +195,6 @@ async function sendForm(event) {
     }
 }
 
-// Показ формы создания новой колонки
-function show_create_column_form(event) {
-    const createColumnForm = document.querySelector('.column-settings')
-    setup_column_settings_form(createColumnForm, undefined, event.target, true)
-    createColumnForm.classList.toggle('active')
-}
-
 // Функция создания новой колонки
 function create_new_column(newColumn) {
     //Добавление новой колонки на доску
@@ -248,6 +251,36 @@ function update_board_columns(column) {
 
     boardColumn.querySelector('.column__title').innerText = column.fields.title
     formColumn.innerText = column.fields.title
+}
+
+// Показ формы создания новой задачи
+function show_create_task_form(event) {
+    const taskForm = document.querySelector('.task-form');
+    setup_task_form(taskForm, event.target);
+    taskForm.classList.toggle('active');
+}
+
+// Показ формы настройки определённой задачи
+function show_task_settings_form(event) {
+    const taskForm = document.querySelector('.task-form');
+    setup_task_form(taskForm, event.target);
+    taskForm.classList.toggle('active');
+}
+
+// Показ описания задачи
+function show_task_description(event) {
+    const taskForm = document.querySelector('.task-form')
+    const taskDescription = document.querySelector('.task-description');
+    setup_task_description(taskDescription, event.target);
+    taskDescription.classList.toggle('active');
+    if (taskForm.classList.contains('active')) taskForm.classList.remove('active');
+}
+
+// Показ формы создания новой колонки
+function show_create_column_form(event) {
+    const createColumnForm = document.querySelector('.column-settings')
+    setup_column_settings_form(createColumnForm, undefined, event.target, true)
+    createColumnForm.classList.toggle('active')
 }
 
 // Функция показа формы настройки доски
@@ -332,4 +365,45 @@ function setup_column_settings_form(columnForm, editButton=null, newColumnButton
         columnForm.style.top = `${editButtonRect.top + editButtonRect.height + window.scrollY}px`
         columnForm.style.left = `${editButtonRect.left + editButtonRect.width - columnFormRect.width}px`
     }
+}
+
+// Размещает форму настройки или создания новой задачи под кнопкой
+function setup_task_form(taskForm, button) {
+    const taskFormRect = taskForm.getBoundingClientRect();
+    const buttonRect = button.getBoundingClientRect();
+
+    // Установка формы под кнопкой
+    taskForm.style.top = `${buttonRect.bottom + window.scrollY}px`;
+    taskForm.style.left = `${buttonRect.left}px`;
+
+    // Задание данных о задаче либо их очистка
+    if (button.classList.contains('board__add-task')) {
+        taskForm.setAttribute('task', '');
+        taskForm.querySelector('input[name="id"]').setAttribute('value', '');
+    }
+    else {
+        taskForm.setAttribute('task', button.getAttribute('task'));
+        taskForm.querySelector('input[name="id"]').setAttribute('value', button.getAttribute('task'));
+    }
+}
+
+// Размещает описание задачи сбоку от неё
+function setup_task_description(taskDescription, task) {
+    const taskRect = task.getBoundingClientRect();
+    const taskDescriptionRect = taskDescription.getBoundingClientRect();
+
+    taskDescription.style.top = `${taskRect.top + window.scrollY}px`;
+    // Установка описания справа либо слева
+    if (taskRect.left - taskDescriptionRect.width < 10) {
+        taskDescription.style.left = `${taskRect.right}px`;
+        console.log('right')
+    }
+    else {
+        taskDescription.style.left = `${taskRect.left - taskDescriptionRect.width}px`;
+        console.log('left')
+    }
+
+    // Задание данных о задаче
+    taskDescription.setAttribute('task', task.getAttribute('value'));
+    taskDescription.querySelector('button').setAttribute('task', task.getAttribute('value'));
 }

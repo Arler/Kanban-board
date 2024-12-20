@@ -1,42 +1,46 @@
-@import "../default.scss";
-
 .task-description {
-    width: 440px;
+    position: absolute;
+    z-index: 2;
+    visibility: hidden;
+    width: 450px;
     height: 340px;
     display: flex;
     flex-direction: column;
-}
-.title {
-    background: #4caf50;
-    width: 440px;
-    height: 39px;
-    text-align: center;
-    padding-top: 10px;
-
-		&__title {
+    &__title-block {
+        background: #4caf50;
+        width: 450px;
+        height: 39px;
+        text-align: center;
+        padding-top: 10px;
+    
+        &__text {
             color: #f5f5f5;
             font-family: Alexandria, sans-serif;
             font-size: 16px;
-		}
+        }
+    }
+    &__description-block {
+        width: 450px;
+        height: 261px;
+        background: #d0d0d0;
+        padding: 10px;
+    
+            &__text {
+                font-family: Alexandria, sans-serif;
+                font-size: 14px;
+            }
+    }
+    &__settings-button {
+        width: 450px;
+        height: 40px;
+        background: #91c734;
+        text-align: center;
+        color: #ffffff;
+        font-family: Inter, sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+    }
 }
-.description {
-    width: 440px;
-    height: 261px;
-    background: #d0d0d0;
-    padding: 10px;
-
-		&__text {
-            font-family: Alexandria, sans-serif;
-            font-size: 14px;
-		}
-}
-.settings-button {
-    width: 440px;
-    height: 40px;
-    background: #91c734;
-    text-align: center;
-    color: #ffffff;
-    font-family: Inter, sans-serif;
-    font-size: 14px;
-    font-weight: 600;
+.active {
+    visibility: visible;
 }

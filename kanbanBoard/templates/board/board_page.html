@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/board/board_page.css' %}"></link>
     <link id="board-settings-style" rel="stylesheet" href="{% static "css/board/forms/board_settings_form.css" %}">
     <link id="column-settings-style" rel="stylesheet" href="{% static "css/board/forms/column_settings_form.css" %}">
+    <link rel="stylesheet" href="{% static "css/board/forms/task_form.css" %}">
+    <link rel="stylesheet" href="{% static "css/board/task_description.css" %}">
 {% endblock link_css %}
 
 
@@ -15,6 +17,8 @@
     <div class="container">
         {% include "board/forms/board_settings_form.html" %}
         {% include "board/forms/column_settings_form.html" %}
+        {% include "board/forms/task_form.html" %}
+        {% include "board/task_description.html" %}
         <div class="board" id="{{ board.pk }}">
             <div class="board__settings-buttons">
                 <span class="board__add-task">+ Добавить задачу</span>
@@ -30,7 +34,7 @@
                     <div class="column__tasks-container">
                         {% for task in board.tasks.all %}
                             {% if task.column.title == column.title %}
-                                <div class="task">
+                                <div class="task" value="{{ task.pk }}">
                                     <span class="task__title">{{ task.title }}</span>
                                     <span class="task__description">{{ task.description }}</span>
                                 </div>

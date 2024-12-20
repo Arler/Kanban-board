@@ -1,18 +1,17 @@
-{% load static %}
-<link rel="stylesheet" href="{% static "css/board/forms/task_form.css" %}">
-<form class="task-form" value="{{ pk }}">
-    <div class="inputs-container">
-        {% for field in form %}
-            <div class="input-line">
-                <div class="input-line__label-wrap">
+<form class="task-form" task="">
+    <input type="hidden" name="id" value="">
+    <div class="task-form__inputs-container">
+        {% for field in task_form %}
+            <div class="task-form__input-line">
+                <div class="task-form__input-line__label-wrap">
                     {{ field.label_tag }}
                 </div>
                 {{ field }}
             </div>
         {% endfor %}
     </div>
-    <div class="buttons">
-        <button class="buttons__button-save" type="submit">Сохранить</button>
-        <button class="buttons__button-delete" type="button">Удалить</button>
+    <div class="task-form__buttons">
+        <button class="task-form__buttons__button-save" type="submit">Сохранить</button>
+        <button class="task-form__buttons__button-delete" type="button">Удалить</button>
     </div>
 </form>

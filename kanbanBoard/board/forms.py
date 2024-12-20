@@ -11,9 +11,6 @@ class BoardForm(forms.ModelForm):
             "title": "Название",
             "max_tasks": "Макс кол-во задач",
         }
-        widgets = {
-            "title": forms.widgets.TextInput(attrs={"value": " "}),
-        }
     
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -37,6 +34,9 @@ class TaskForm(forms.ModelForm):
             "users": "Пользователи",
             "description": "Описание",
             "column": "Столбец",
+        }
+        widgets ={
+            'deadline': forms.SelectDateWidget()
         }
 
 
