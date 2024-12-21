@@ -3,16 +3,17 @@
   z-index: 2;
   visibility: hidden;
   width: 450px;
-  height: 340px;
+  min-height: 340px;
   display: flex;
   flex-direction: column;
 }
 .task-description__title-block {
   background: #4caf50;
   width: 450px;
-  height: 39px;
+  min-height: 40px;
   text-align: center;
-  padding-top: 10px;
+  padding: 10px 5px 10px 5px;
+  word-break: break-all;
 }
 .task-description__title-block__text {
   color: #f5f5f5;
@@ -24,6 +25,8 @@
   height: 261px;
   background: #d0d0d0;
   padding: 10px;
+  word-break: break-all;
+  overflow: scroll;
 }
 .task-description__description-block__text {
   font-family: Alexandria, sans-serif;

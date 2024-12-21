@@ -29,7 +29,7 @@ function buttonResponse(event) {
     else if (event.target.classList.contains('task-description__settings-button')) {
         show_task_settings_form(event)
     }
-    else if (event.target.classList.contains('task')) {
+    else if (event.target.classList.contains('task') || event.target.closest('.task')) {
         show_task_description(event)
     }
 }
@@ -269,9 +269,16 @@ function show_task_settings_form(event) {
 
 // Показ описания задачи
 function show_task_description(event) {
+    let task
+    if (!event.target.classList.contains('.task')) {
+        task = event.target.closest('.task');
+    }
+    else {
+        task = event.target;
+    }
     const taskForm = document.querySelector('.task-form')
     const taskDescription = document.querySelector('.task-description');
-    setup_task_description(taskDescription, event.target);
+    setup_task_description(taskDescription, task);
     taskDescription.classList.toggle('active');
     if (taskForm.classList.contains('active')) taskForm.classList.remove('active');
 }
@@ -396,14 +403,14 @@ function setup_task_description(taskDescription, task) {
     // Установка описания справа либо слева
     if (taskRect.left - taskDescriptionRect.width < 10) {
         taskDescription.style.left = `${taskRect.right}px`;
-        console.log('right')
     }
     else {
         taskDescription.style.left = `${taskRect.left - taskDescriptionRect.width}px`;
-        console.log('left')
     }
 
     // Задание данных о задаче
     taskDescription.setAttribute('task', task.getAttribute('value'));
     taskDescription.querySelector('button').setAttribute('task', task.getAttribute('value'));
+    taskDescription.querySelector('.task-description__title-block__text').innerText = task.querySelector('.task__title').innerText;
+    taskDescription.querySelector('.task-description__description-block__text').innerText = task.querySelector('.task__description').innerText;
 }

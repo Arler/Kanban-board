@@ -81,6 +81,7 @@ body {
 	padding: 15px 7px;
 	display: flex;
 	flex-direction: column;
+	word-break: break-all;
 
 	&:hover {
 		cursor: pointer;
@@ -90,12 +91,20 @@ body {
 			font-family: Alexandria, sans-serif;
 			font-size: 16px;
 			color: #000000;
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
+			text-overflow: ellipsis;
 		}
 		&__description {
 			margin-top: 10px;
 			color: #757575;
 			font-family: Alexandria, sans-serif;
 			font-size: 16px;
+			display: -webkit-box;
+			-webkit-line-clamp: 7;
+			-webkit-box-orient: vertical;
+			text-overflow: ellipsis;
 		}
 }
 .drag-over {
