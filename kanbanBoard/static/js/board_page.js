@@ -189,10 +189,52 @@ async function sendForm(event) {
                     body: JSON.stringify(formData),
                 }
             )
-            const newColumn = await response.json()
-            create_new_column(newColumn)
+            create_new_column(await response.json())
         }
     }
+    else if (formName == 'task-form') {
+        if (form.querySelector('input[name="id"]').getAttribute('value') != '') {
+            const formData = Object.fromEntries(new FormData(form))
+            formData['users'] = Array.from(formData['users'])
+            const response = await fetch(
+                `${window.location.protocol}//${window.location.host}/api/task/`,
+                {
+                    method: "PUT",
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(formData),
+                }
+            )
+            if (response.ok) console.log('Запрос на изменение задачи отправлен')
+            else console.error('Ошибка запроса', response)
+            // create_new_task(await response.json())
+        }
+    else {
+        const formData = Object.fromEntries(new FormData(form))
+        formData['board-id'] = BOARDID
+        formData['users'] = Array.from(formData['users'])
+        const response = await fetch(
+            `${window.location.protocol}//${window.location.host}/api/task/`,
+            {
+                method: "POST",
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken'),
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            }
+        )
+        if (response.ok) console.log('Запрос на добавление задачи отправлен')
+        else console.error('Ошибка запроса', response)
+        // create_new_task(await response.json())
+    }
+    }
+}
+
+function create_new_task(newTask) {
+
 }
 
 // Функция создания новой колонки
