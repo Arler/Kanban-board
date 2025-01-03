@@ -32,6 +32,9 @@ function buttonResponse(event) {
     else if (event.target.classList.contains('task') || event.target.closest('.task')) {
         show_task_description(event)
     }
+    else if (event.target.classList.contains('task-form__buttons__button-delete')) {
+        delete_task(event)
+    }
 }
 
 // Отслеживание события клика по кнопкам
@@ -263,6 +266,29 @@ function create_new_column(newColumn) {
     document.querySelector('.board-settings__column-container').insertAdjacentElement('beforeend', newColumnNode);
 }
 
+// Удаление задачи
+async function delete_task(event) {
+    const taskId = event.target.getAttribute('value')
+
+    const response = await fetch(
+        `${window.location.protocol}//${window.location.host}/api/task/`,
+        {
+            method: "DELETE",
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({id: taskId}),
+        }
+    )
+    if (response.ok) {
+        document.querySelector(`.task[value="${taskId}"]`).remove()
+        document.querySelector('.task-description').classList.remove('active')
+        document.querySelector('.task-form').classList.remove('active')
+    }
+    else console.error(response)
+}
+
 // Функция удаления колонки
 async function delete_column(event) {
     const columnId = event.target.getAttribute('value')
@@ -284,6 +310,7 @@ async function delete_column(event) {
         document.querySelector('.board-settings__delete-button').classList.remove('active')
         document.querySelector('.board-settings__edit-button').classList.remove('active')
     }
+    else console.error(response)
 }
 
 // Функция обновления информации о колонках
@@ -418,7 +445,6 @@ function setup_column_settings_form(columnForm, editButton=null, newColumnButton
 
 // Размещает форму настройки или создания новой задачи под кнопкой
 function setup_task_form(taskForm, button) {
-    const taskFormRect = taskForm.getBoundingClientRect();
     const buttonRect = button.getBoundingClientRect();
 
     // Установка формы под кнопкой
@@ -433,6 +459,7 @@ function setup_task_form(taskForm, button) {
     else {
         taskForm.setAttribute('task', button.getAttribute('task'));
         taskForm.querySelector('input[name="id"]').setAttribute('value', button.getAttribute('task'));
+        taskForm.querySelector('.task-form__buttons__button-delete').setAttribute('value', button.getAttribute('task'))
     }
 }
 

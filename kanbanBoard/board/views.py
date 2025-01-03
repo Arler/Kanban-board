@@ -20,49 +20,34 @@ import os
 
 def task_api(request):
     data = json.loads(request.body.decode('utf-8'))
+    # -------------------- Создание задачи --------------------
     if request.method == 'POST':
         new_task_form = TaskForm(data)
 
         if new_task_form.is_valid():
             new_task = new_task_form.save()
-            new_task = json.loads(serialize('json', [new_task]))
+            board = Board.objects.get(pk=data.get('board-id'))
+            board.tasks.add(new_task)
+            board.save()
+            new_task = json.loads(serialize('json', [new_task]))[0]
 
             return JsonResponse(new_task, safe=False)
         else:
             return JsonResponse({'errors': new_task_form.errors}, status=400)
-        
+    
+    # -------------------- Изменение задачи --------------------
     elif request.method == 'PUT':
         task = Task.objects.get(pk=data.get('id', None))
+        edit_task_form = TaskForm(data, instance=task)
+        if edit_task_form.is_valid():
+            updated_task = edit_task_form.save()
+            updated_task = json.loads(serialize('json', [updated_task]))[0]
 
-        # Добавление и удаление пользователей на задачу
-        if data.get('remove-user', None):
-            removed_users = User.objects.filter(task__users=data.get('users', None)) # Должен быть id пользователя
-            if removed_users:
-                task.users.remove(removed_users)
-
-                return HttpResponse()
-            else:
-                return HttpResponseBadRequest('Wrong user id')
-        elif data.get('add-user', None):
-            added_users = User.objects.filter(task__users=data.get('users', None)) # Должен быть id пользователя
-            if added_users:
-                task.users.add(added_users)
-
-                return HttpResponse()
-            else:
-                return HttpResponseBadRequest('Wrong user id')
-
-        # Изменение инстанса задачи
+            return JsonResponse(updated_task, safe=False)
         else:
-            edit_task_form = TaskForm(data, instance=task)
-            if edit_task_form.is_valid():
-                updated_task = edit_task_form.save()
-                updated_task = json.loads(serialize('json', [updated_task]))
-
-                return JsonResponse(updated_task, safe=False)
-            else:
-                return JsonResponse({'errors': edit_task_form.errors}, status=400)
-        
+            return JsonResponse({'errors': edit_task_form.errors}, status=400)
+    
+    # -------------------- Удаление задачи --------------------
     elif request.method == 'DELETE':
         task = Task.objects.get(pk=data.get('id', None))
         if task:
@@ -73,6 +58,7 @@ def task_api(request):
             return HttpResponseBadRequest('Wrong id')
 
 def board_api(request):
+    # ---------- Создание новой доски ----------
     if request.method == 'POST':
         data = json.loads(request.body.decode('utf-8'))
         data['owner'] = request.user
@@ -91,6 +77,8 @@ def board_api(request):
             return JsonResponse(new_board, safe=False)
         else:
             return JsonResponse({'errors': new_board_form.errors}, status=400)
+
+    # -------------------- Редактирование доски --------------------
     elif request.method == 'PUT':
         data = json.loads(request.body.decode('utf-8'))
         board = Board.objects.get(pk=data.get('id'))
@@ -115,6 +103,8 @@ def board_api(request):
             return JsonResponse(updated_board, safe=False)
         else:
             return JsonResponse({'errors': edit_board_form.errors}, status=400)
+        
+    # -------------------- Удаление доски --------------------
     elif request.method == 'DELETE':
         data = json.loads(request.body.decode('utf-8'))
         board = Board.objects.get(pk=data.get('id', None))
