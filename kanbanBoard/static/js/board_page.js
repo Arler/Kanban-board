@@ -210,9 +210,8 @@ async function sendForm(event) {
                     body: JSON.stringify(formData),
                 }
             )
-            if (response.ok) console.log('Запрос на изменение задачи отправлен')
+            if (response.ok) update_task(await response.json())
             else console.error('Ошибка запроса', response)
-            // create_new_task(await response.json())
         }
     else {
         const formData = Object.fromEntries(new FormData(form))
@@ -229,15 +228,28 @@ async function sendForm(event) {
                 body: JSON.stringify(formData),
             }
         )
-        if (response.ok) console.log('Запрос на добавление задачи отправлен')
+        if (response.ok) create_new_task(await response.json())
         else console.error('Ошибка запроса', response)
-        // create_new_task(await response.json())
     }
     }
 }
 
 function create_new_task(newTask) {
+    const targetColumnTasksContainer = document.querySelector(`#column-${newTask.fields.column}`).querySelector('.column__tasks-container')
+    const newTaskElement = document.createElement('div')
 
+    // Создание задачи
+    newTaskElement.classList.add('task')
+    newTaskElement.setAttribute('value', newTask.pk)
+    newTaskElement.appendChild(document.createElement('span'))
+    newTaskElement.lastElementChild.classList.add('task__title')
+    newTaskElement.lastElementChild.innerText = newTask.fields.title
+    newTaskElement.appendChild(document.createElement('span'))
+    newTaskElement.lastElementChild.classList.add('task__description')
+    newTaskElement.lastElementChild.innerText = newTask.fields.description
+
+    // Добавление задачи на доску
+    targetColumnTasksContainer.appendChild(newTaskElement)
 }
 
 // Функция создания новой колонки
@@ -320,6 +332,13 @@ function update_board_columns(column) {
 
     boardColumn.querySelector('.column__title').innerText = column.fields.title
     formColumn.innerText = column.fields.title
+}
+
+// Обновление информации о задаче
+function update_task(task) {
+    const oldTask = document.querySelector(`.task[value="${task.pk}"]`)
+    oldTask.querySelector('.task__title').innerText = task.fields.title
+    oldTask.querySelector('.task_description').innerText = task.fields.description
 }
 
 // Показ формы создания новой задачи
