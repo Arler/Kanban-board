@@ -34,7 +34,7 @@
   align-items: center;
   text-align: center;
   color: #f5f5f5;
-  font-family: "Alexandria", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 18px;
 }
 
@@ -43,7 +43,7 @@
   height: 50px;
   background: #91C734;
   border-radius: 8px;
-  font-family: "Helvetica", "Arial", sans-serif;
+  font-family: "Noto Sans", "Arial", sans-serif;
   font-size: 17px;
   color: #ffffff;
 }

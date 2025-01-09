@@ -1,8 +1,12 @@
 @import "nullstyle.scss";
 
 @font-face {
-    font-family: "Alexandria";
-    src: url(../fonts/alexandria/Alexandria-VariableFont_wght.ttf) format("ttf");
+    font-family: 'Noto Sans';
+    src: url('../../fonts/alexandria/NotoSans-Regular.woff2') format('woff2'),
+        url('../../fonts/alexandria/NotoSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
 
 .header {
@@ -17,7 +21,7 @@
 }
 
 .action-button {
-    font-family: "Alexandria", sans-serif;
+    font-family: 'Noto Sans';
     margin: 10px 40px;
     display: inline-block;
 }
@@ -28,7 +32,7 @@
 
     &__link {
         color: #f5f5f5;
-        font-family: "Alexandria", sans-serif;
+        font-family: 'Noto Sans';
         font-size: 36px;
         display: inline-block;
         margin: 14px 40px 0 0;

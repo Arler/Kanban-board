@@ -17,7 +17,7 @@
 }
 .task-description__title-block__text {
   color: #f5f5f5;
-  font-family: Alexandria, sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 16px;
 }
 .task-description__description-block {
@@ -29,7 +29,7 @@
   overflow: scroll;
 }
 .task-description__description-block__text {
-  font-family: Alexandria, sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 14px;
 }
 .task-description__settings-button {

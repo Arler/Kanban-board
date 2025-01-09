@@ -70,8 +70,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @font-face {
-  font-family: "Alexandria";
-  src: url(../fonts/alexandria/Alexandria-VariableFont_wght.ttf) format("ttf");
+  font-family: "Noto Sans";
+  src: url("../../fonts/alexandria/NotoSans-Regular.woff2") format("woff2"), url("../../fonts/alexandria/NotoSans-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 .header {
   width: 100%;
@@ -84,7 +87,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .action-button {
-  font-family: "Alexandria", sans-serif;
+  font-family: "Noto Sans";
   margin: 10px 40px;
   display: inline-block;
 }
@@ -95,7 +98,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .nav__link {
   color: #f5f5f5;
-  font-family: "Alexandria", sans-serif;
+  font-family: "Noto Sans";
   font-size: 36px;
   display: inline-block;
   margin: 14px 40px 0 0;
@@ -135,7 +138,7 @@ body {
 .banner__title {
   margin-top: 20px;
   color: #757575;
-  font-family: "Alexandria", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 24px;
 }
 .banner__buttons {
@@ -189,12 +192,12 @@ body {
   font-size: 17px;
   color: #f5f5f5;
   margin-left: auto;
-  font-family: "Alexandria", sans-serif;
+  font-family: "Noto Sans", sans-serif;
 }
 
 .notifications {
   color: #f5f5f5;
-  font-family: "Alexandria", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 24px;
 }
 .notifications__checkbox {
@@ -204,7 +207,7 @@ body {
 
 .username {
   color: #f5f5f5;
-  font-family: "Alexandria", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 24px;
 }
 .username__change {
@@ -227,7 +230,7 @@ body {
 }
 .danger-zone__title {
   color: #c84343;
-  font-family: "Alexandria", sans-serif;
+  font-family: "Noto Sans", sans-serif;
   font-size: 36px;
 }
 .danger-zone__delete-account {
@@ -238,7 +241,7 @@ body {
   background: #c76034;
   color: #f5f5f5;
   font-size: 15px;
-  font-family: "Alexandria", sans-serif;
+  font-family: "Noto Sans", sans-serif;
 }
 
 .active {
