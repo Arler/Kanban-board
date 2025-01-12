@@ -138,6 +138,13 @@ body {
 .board__add-task:hover {
   cursor: pointer;
 }
+.board__title {
+  word-break: break-all;
+  max-width: 250px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
 .board__settings:hover {
   cursor: pointer;
 }
@@ -195,7 +202,6 @@ body {
   display: -webkit-box;
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
 }
 .task__description {
   margin-top: 10px;

@@ -35,6 +35,11 @@ body {
 			}
 		}
 		&__title {
+			word-break: break-all;
+			max-width: 250px;
+			display: -webkit-box;
+			-webkit-line-clamp: 1;
+			-webkit-box-orient: vertical;
 		}
 		&__settings {
 			&:hover {
@@ -94,7 +99,6 @@ body {
 			display: -webkit-box;
 			-webkit-line-clamp: 1;
 			-webkit-box-orient: vertical;
-			text-overflow: ellipsis;
 		}
 		&__description {
 			margin-top: 10px;
