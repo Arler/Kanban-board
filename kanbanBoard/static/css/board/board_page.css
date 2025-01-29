@@ -152,9 +152,10 @@ body {
 .column-container {
   margin-top: 25px;
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   flex-direction: row;
-  gap: 47px;
+  gap: 40px;
 }
 
 .column {
