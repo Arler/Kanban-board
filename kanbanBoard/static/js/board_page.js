@@ -463,7 +463,7 @@ function setup_column_settings_form(columnForm, editButton=null, newColumnButton
 }
 
 // Размещает форму настройки или создания новой задачи под кнопкой
-function setup_task_form(taskForm, button) {
+async function setup_task_form(taskForm, button) {
     const buttonRect = button.getBoundingClientRect();
 
     // Установка формы под кнопкой
@@ -471,14 +471,63 @@ function setup_task_form(taskForm, button) {
     taskForm.style.left = `${buttonRect.left}px`;
 
     // Задание данных о задаче либо их очистка
-    if (button.classList.contains('board__add-task')) {
+    if (button.classList.contains('board__add-task')) { // Новая задача
         taskForm.setAttribute('task', '');
         taskForm.querySelector('input[name="id"]').setAttribute('value', '');
+        taskForm.querySelector('input[id="id_title"]').setAttribute('value', '') // Заголовок
+        Array.from(taskForm.querySelector('select[id="id_deadline_day"]').children).forEach((option) => {
+            option.removeAttribute('selected')
+        })
+        taskForm.querySelector('select[id="id_deadline_day"]').
+        querySelector(`option`).setAttribute('selected', '') // День дедлайна
+        Array.from(taskForm.querySelector('select[id="id_deadline_month"]').children).forEach((option) => {
+            option.removeAttribute('selected')
+        })
+        taskForm.querySelector('select[id="id_deadline_month"]')
+        .querySelector(`option`).setAttribute('selected', '') // Месяц дедлайна
+        Array.from(taskForm.querySelector('select[id="id_deadline_year"]').children).forEach((option) => {
+            option.removeAttribute('selected')
+        })
+        taskForm.querySelector('select[id="id_deadline_year"]')
+        .querySelector(`option`).setAttribute('selected', '') // Год дедлайна
+        Array.from(taskForm.querySelector('select[id="id_users"]').children).forEach((option) => {
+            option.removeAttribute('selected') // Пользователи
+        })
+        taskForm.querySelector('textarea[id="id_description"]').innerText = '' // Описание
+        Array.from(taskForm.querySelector('select[id="id_column"]').children).forEach((option) => {
+            option.removeAttribute('selected')
+        })
+        taskForm.querySelector('select[id="id_column"]').
+        querySelector(`option`).setAttribute('selected', '') // Колонка
     }
-    else {
+    else { // Изменение задачи
         taskForm.setAttribute('task', button.getAttribute('task'));
         taskForm.querySelector('input[name="id"]').setAttribute('value', button.getAttribute('task'));
         taskForm.querySelector('.task-form__buttons__button-delete').setAttribute('value', button.getAttribute('task'))
+
+        const response = await fetch(
+            `${window.location.protocol}//${window.location.host}/api/task/${button.getAttribute('task')}`,
+            {headers: {'X-CSRFToken': getCookie('csrftoken')}}
+        )
+        const taskData = await response.json()
+
+        // Подставление значений задачи в форму для её редактирования
+        const [year, month, day] = taskData.fields.deadline.split('-').map(Number)
+        taskForm.querySelector('input[id="id_title"]').setAttribute('value', taskData.fields.title) // Заголовок
+        taskForm.querySelector('select[id="id_deadline_day"]').
+        querySelector(`option[value="${day}"]`).setAttribute('selected', '') // День дедлайна
+        taskForm.querySelector('select[id="id_deadline_month"]')
+        .querySelector(`option[value="${month}"]`).setAttribute('selected', '') // Месяц дедлайна
+        taskForm.querySelector('select[id="id_deadline_year"]')
+        .querySelector(`option[value="${year}"]`).setAttribute('selected', '') // Год дедлайна
+        if (taskData.fields.users.length > 0) {
+            taskData.fields.users.forEach((user) => {
+                taskForm.querySelector('select[id="id_users"]').querySelector(`option[value="${user}"]`).setAttribute('selected', '') // Пользователи
+            })
+        }
+        taskForm.querySelector('textarea[id="id_description"]').innerText = taskData.fields.description // Описание
+        taskForm.querySelector('select[id="id_column"]').
+        querySelector(`option[value="${taskData.fields.column}"]`).setAttribute('selected', '') // Колонка
     }
 }
 

@@ -1,9 +1,12 @@
 from django.shortcuts import render
+from django.core.serializers import serialize
+from django.http import JsonResponse
 
 from board.models import Task, Board
 from board.forms import TaskForm, BoardForm, ColumnForm
 
-# Create your views here.
+import json
+
 def get_new_board_form(request, pk):   
     context = {
     "form": BoardForm(),
@@ -52,3 +55,9 @@ def get_board_html(request, pk):
     }
 
     return render(request, template_name="board/board.html", context=context)
+
+def get_task_data(request, pk):
+    task = Task.objects.get(pk=pk)
+    task = json.loads(serialize('json', [task]))[0]
+
+    return JsonResponse(task, safe=False)
