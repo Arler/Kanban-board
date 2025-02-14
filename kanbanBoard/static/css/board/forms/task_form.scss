@@ -1,6 +1,6 @@
 .task-form {
     max-width: 450px;
-    position: absolute;
+    position: fixed;
     visibility: hidden;
     display: flex;
     justify-content: space-between;
@@ -10,6 +10,7 @@
     padding: 10px;
     gap: 10px;
     z-index: 2;
+    margin: auto auto;
     &__input-line {
         display: inline-flex;
         

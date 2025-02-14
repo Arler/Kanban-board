@@ -1,9 +1,10 @@
 .board-settings {
-    position: absolute;
+    position: fixed;
     visibility: hidden;
     width: 450px;
     height: min-content;
     z-index: 2;
+    margin: auto auto;
     
     &__inputs-container {
         background: #c8e6c9;
