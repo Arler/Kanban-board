@@ -1,11 +1,12 @@
 .column-settings {
     visibility: hidden;
-    position: absolute;
+    position: fixed;
     width: 450px;
     height: min-content;
     z-index: 4;
     background: #f5f5f5;
     padding: 10px;
+    margin: auto auto;
 
     &__save-column {
         width: 430px;

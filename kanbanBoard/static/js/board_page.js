@@ -7,7 +7,7 @@ let columns = document.querySelectorAll('.column')
 
 
 // Функция обработки нажатия кнопок
-function buttonResponse(event) {
+function clickResponse(event) {
     if (event.target.classList.contains('board__settings')) {
         show_board_settings_form(event)
     }
@@ -35,10 +35,14 @@ function buttonResponse(event) {
     else if (event.target.classList.contains('task-form__buttons__button-delete')) {
         delete_task(event)
     }
+    else if (event.target.classList.contains('modal-background')) {
+        hideForm()
+        event.target.classList.remove('back-active')
+    }
 }
 
 // Отслеживание события клика по кнопкам
-document.addEventListener('click', buttonResponse)
+document.addEventListener('click', clickResponse)
 // Отслеживание события отправки формы
 document.addEventListener("submit", sendForm)
 // Отслеживание перемещения колонок
@@ -50,6 +54,8 @@ columns.forEach((column) => {
     column.ondragenter = dragEnter;
     column.ondragexit = dragExit;
 });
+// Отслеживание закрытия модального окна
+document.addEventListener("keyup", key_handler)
 
 // -------------------- Функции управления перетаскиванием --------------------
 
@@ -234,6 +240,13 @@ async function sendForm(event) {
     }
 }
 
+function key_handler(event) {
+    if (event.code == 'Escape') {
+        document.querySelector('.active').classList.remove('active')
+        document.querySelector('.modal-background').classList.remove('back-active')
+    }
+}
+
 function create_new_task(newTask) {
     const targetColumnTasksContainer = document.querySelector(`#column-${newTask.fields.column}`).querySelector('.column__tasks-container')
     const newTaskElement = document.createElement('div')
@@ -341,10 +354,18 @@ function update_task(task) {
     oldTask.querySelector('.task_description').innerText = task.fields.description
 }
 
+// Активация заднего фона модального окна
+function activate_modal_background() {
+    const modalBackground = document.querySelector(".modal-background");
+    modalBackground.classList.toggle('back-active');
+    modalBackground.focus();
+}
+
 // Показ формы создания новой задачи
 function show_create_task_form(event) {
     const taskForm = document.querySelector('.task-form');
     setup_task_form(taskForm, event.target);
+    activate_modal_background()
     taskForm.classList.toggle('active');
 }
 
@@ -352,6 +373,7 @@ function show_create_task_form(event) {
 function show_task_settings_form(event) {
     const taskForm = document.querySelector('.task-form');
     setup_task_form(taskForm, event.target);
+    activate_modal_background()
     taskForm.classList.toggle('active');
 }
 
@@ -367,8 +389,8 @@ function show_task_description(event) {
     const taskForm = document.querySelector('.task-form')
     const taskDescription = document.querySelector('.task-description');
     setup_task_description(taskDescription, task);
-    taskDescription.classList.toggle('active');
-    if (taskForm.classList.contains('active')) taskForm.classList.remove('active');
+    taskDescription.classList.toggle('task-desc-active');
+    if (taskForm.classList.contains('task-desc-active')) taskForm.classList.remove('task-desc-active');
 }
 
 // Показ формы создания новой колонки
@@ -380,11 +402,13 @@ function show_create_column_form(event) {
 
 // Функция показа формы настройки доски
 function show_board_settings_form(event) {
-    let boardSettingsForm = document.querySelector(`.board-settings`)
+    const boardSettingsForm = document.querySelector(`.board-settings`)
 
-    setup_board_settings_form(boardSettingsForm, event.target)
     if (boardSettingsForm.classList.contains('active')) hideAllForm()
-    else boardSettingsForm.classList.toggle('active')
+    else {
+        boardSettingsForm.classList.toggle('active')
+        activate_modal_background()
+    }
 }
 
 // Функция показа кнопок взаимодействия с колонками
@@ -464,12 +488,6 @@ function setup_column_settings_form(columnForm, editButton=null, newColumnButton
 
 // Размещает форму настройки или создания новой задачи под кнопкой
 async function setup_task_form(taskForm, button) {
-    const buttonRect = button.getBoundingClientRect();
-
-    // Установка формы под кнопкой
-    taskForm.style.top = `${buttonRect.bottom + window.scrollY}px`;
-    taskForm.style.left = `${buttonRect.left}px`;
-
     // Задание данных о задаче либо их очистка
     if (button.classList.contains('board__add-task')) { // Новая задача
         taskForm.setAttribute('task', '');
@@ -533,18 +551,6 @@ async function setup_task_form(taskForm, button) {
 
 // Размещает описание задачи сбоку от неё
 function setup_task_description(taskDescription, task) {
-    const taskRect = task.getBoundingClientRect();
-    const taskDescriptionRect = taskDescription.getBoundingClientRect();
-
-    taskDescription.style.top = `${taskRect.top + window.scrollY}px`;
-    // Установка описания справа либо слева
-    if (taskRect.left - taskDescriptionRect.width < 10) {
-        taskDescription.style.left = `${taskRect.right}px`;
-    }
-    else {
-        taskDescription.style.left = `${taskRect.left - taskDescriptionRect.width}px`;
-    }
-
     // Задание данных о задаче
     taskDescription.setAttribute('task', task.getAttribute('value'));
     taskDescription.querySelector('button').setAttribute('task', task.getAttribute('value'));

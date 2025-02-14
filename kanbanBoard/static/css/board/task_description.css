@@ -1,6 +1,8 @@
 .task-description {
-  position: absolute;
-  z-index: 2;
+  position: fixed;
+  top: 60%;
+  left: 2%;
+  z-index: 1;
   visibility: hidden;
   width: 450px;
   min-height: 340px;
@@ -43,6 +45,6 @@
   font-weight: 600;
 }
 
-.active {
+.task-desc-active {
   visibility: visible;
 }
