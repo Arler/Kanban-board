@@ -34,7 +34,7 @@
                     </div>
                     <div class="column__tasks-container">
                         {% for task in board.tasks.all %}
-                            {% if task.column.title == column.title %}
+                            {% if task.column.pk == column.pk %}
                                 <div class="task" value="{{ task.pk }}">
                                     <span class="task__title">{{ task.title }}</span>
                                     <span class="task__description">{{ task.description }}</span>
