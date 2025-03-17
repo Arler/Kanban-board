@@ -200,9 +200,9 @@ body {
   font-family: "Noto Sans";
   font-size: 16px;
   color: #000000;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .task__description {
   margin-top: 10px;
@@ -212,6 +212,7 @@ body {
   display: -webkit-box;
   -webkit-line-clamp: 7;
   -webkit-box-orient: vertical;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 
