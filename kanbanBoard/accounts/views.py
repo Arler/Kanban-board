@@ -17,6 +17,12 @@ def registration(request):
             user_creation_form.save()
 
             return redirect('/accounts/login/')
+        
+        context = {
+            'form': user_creation_form
+        }
+
+        return render(request, template_name='registration/registration.html', context=context)
 
     else:
         context = {
