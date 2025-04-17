@@ -13,25 +13,24 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-)y9=)wmq=#p(+w2ejoqza5-2pv9+&&ow8g7n$0yqpff+wt@)7&'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 SITE_ID = 1
-
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -75,14 +74,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kanbanBoard.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'PASSWORD': os.getenv("PGPASSWORD"),
+        'USER': os.getenv("PGUSER"),
+        'NAME': os.getenv("PGDATABASE"),
+        'PORT': os.getenv("PGPORT", "5432"),
+        'HOST': os.getenv("PGHOST", "localhost"),
     }
 }
 
@@ -120,8 +119,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
+# Static files
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [

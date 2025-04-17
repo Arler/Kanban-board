@@ -1,5 +1,4 @@
 import {getCookie, hideAllForm, hideForm} from "./default.js";
-import {ref, createApp} from "./vue.esm-browser.prod.js";
 
 
 const BOARDID = document.querySelector('.board').getAttribute('id')
