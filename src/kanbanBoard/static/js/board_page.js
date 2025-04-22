@@ -1,4 +1,4 @@
-import {getCookie, hideAllForm, hideForm} from "./default.js";
+import {getCookie, hideModalWindow} from "./default.js";
 
 
 const BOARDID = document.querySelector('.board').getAttribute('id')
@@ -35,7 +35,8 @@ function clickResponse(event) {
         delete_task(event)
     }
     else if (event.target.classList.contains('modal-background')) {
-        hideForm()
+        let modals = document.querySelectorAll('.active')
+        modals.forEach(modal => {hideModalWindow(modal)})
         event.target.classList.remove('back-active')
     }
 }
@@ -366,6 +367,7 @@ function show_create_task_form(event) {
     setup_task_form(taskForm, event.target);
     activate_modal_background()
     taskForm.classList.toggle('active');
+    taskForm.classList.toggle('form-open-animation');
 }
 
 // Показ формы настройки определённой задачи
@@ -374,40 +376,46 @@ function show_task_settings_form(event) {
     setup_task_form(taskForm, event.target);
     activate_modal_background()
     taskForm.classList.toggle('active');
+    taskForm.classList.toggle('form-open-animation');
 }
 
 // Показ описания задачи
 function show_task_description(event) {
+    const taskDescription = document.querySelector('.task-description');
     let task
-    if (!event.target.classList.contains('.task')) {
+    if (!event.target.classList.contains('task')) {
         task = event.target.closest('.task');
     }
     else {
         task = event.target;
     }
-    const taskForm = document.querySelector('.task-form')
-    const taskDescription = document.querySelector('.task-description');
-    setup_task_description(taskDescription, task);
-    taskDescription.classList.toggle('task-desc-active');
-    if (taskForm.classList.contains('task-desc-active')) taskForm.classList.remove('task-desc-active');
+    if (taskDescription.classList.contains('active')) {
+        hideModalWindow(taskDescription);
+    }
+    else {
+        setup_task_description(taskDescription, task);
+        taskDescription.classList.toggle('active');
+        taskDescription.classList.toggle('form-open-animation');
+    }
 }
 
 // Показ формы создания новой колонки
 function show_create_column_form(event) {
-    const createColumnForm = document.querySelector('.column-settings')
-    setup_column_settings_form(createColumnForm, undefined, event.target, true)
-    createColumnForm.classList.toggle('active')
+    const createColumnForm = document.querySelector('.column-settings');
+    if (createColumnForm.classList.contains('active')) hideModalWindow(createColumnForm);
+    else {
+        setup_column_settings_form(createColumnForm, undefined, event.target, true);
+        createColumnForm.classList.add('active');
+        createColumnForm.classList.add('form-open-animation');
+    }
 }
 
 // Функция показа формы настройки доски
 function show_board_settings_form(event) {
     const boardSettingsForm = document.querySelector(`.board-settings`)
-
-    if (boardSettingsForm.classList.contains('active')) hideAllForm()
-    else {
-        boardSettingsForm.classList.toggle('active')
-        activate_modal_background()
-    }
+    boardSettingsForm.classList.add('active')
+    boardSettingsForm.classList.add('form-open-animation')
+    activate_modal_background()
 }
 
 // Функция показа кнопок взаимодействия с колонками
@@ -432,8 +440,12 @@ function show_column_buttons(event) {
 function show_column_settings_form(event) {
     let columnSettingsForm = document.querySelector('.column-settings')
 
-    columnSettingsForm.classList.toggle('active')
-    setup_column_settings_form(columnSettingsForm, event.target, undefined, undefined)
+    if (columnSettingsForm.classList.contains('active')) hideModalWindow(columnSettingsForm)
+    else {
+        setup_column_settings_form(columnSettingsForm, event.target, undefined, undefined)
+        columnSettingsForm.classList.add('active')
+        columnSettingsForm.classList.add('form-open-animation')
+    }
 }
 
 // Функция установки формы настройки доски

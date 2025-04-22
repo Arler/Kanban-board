@@ -14,18 +14,19 @@ export function getCookie(name) {
     return cookieValue;
 }
 
-// Функция отключения формы
-export function hideForm() {
-    let activeForm = document.querySelector('.active')
-    if (activeForm) {
-        activeForm.classList.remove('active')
-    }
+// функция обработчик удаления анимации
+function removeCloseAnimation() {
+    this.classList.remove('form-open-animation')
+    this.classList.remove('form-close-animation')
+    this.classList.remove('active')
+    this.removeEventListener('animationend', removeCloseAnimation)
 }
 
-export function hideAllForm() {
-    let activeForm = document.querySelector('.active')
-    while (activeForm) {
-        activeForm.classList.remove('active')
-        activeForm = document.querySelector('.active')
+// Функция скрытия модального окна
+export function hideModalWindow(activeModalWindow=null) {
+    if (!activeModalWindow) {
+        activeModalWindow = document.querySelector('.active')
     }
+    activeModalWindow.addEventListener('animationend', removeCloseAnimation);
+    activeModalWindow.classList.add('form-close-animation');
 }

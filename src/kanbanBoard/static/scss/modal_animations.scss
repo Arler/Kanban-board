@@ -1,0 +1,26 @@
+@keyframes open-form {
+    from {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes close-form {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+}
+.form-open-animation {
+    animation: open-form 0.2s;
+}
+.form-close-animation {
+    animation: close-form 0.2s;
+}

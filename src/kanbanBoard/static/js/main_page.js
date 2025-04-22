@@ -1,4 +1,4 @@
-import { getCookie, hideForm } from "./default.js";
+import { getCookie, hideModalWindow } from "./default.js";
 
 // Функция получения формы доски
 function get_board_form(pk, func=() => {}, event=null) {
@@ -59,12 +59,12 @@ function show_new_board_form() {
             newBoardForm.classList.remove('active')
         }
         else if (!newBoardForm.classList.contains('active')) {
-            hideForm()
+            hideModalWindow()
             newBoardForm.classList.toggle('active')
         }
     }
     else {
-        hideForm()
+        hideModalWindow()
         get_board_form(0, () => {
             let header = document.querySelector('.header')
             document.head.insertAdjacentHTML("beforeend", sessionStorage.getItem('board-form-style'))
@@ -86,13 +86,13 @@ function show_board_edit_form(event) {
             boardForm.classList.remove('active')
         }
         else if (!boardForm.classList.contains('active')) {
-            hideForm()
+            hideModalWindow()
             boardForm.classList.toggle('active')
             setup_form_nearby_board(boardForm, board)
         }
     }
     else {
-        hideForm()
+        hideModalWindow()
         get_board_form(board.getAttribute('id'), () => {
             board.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
 
