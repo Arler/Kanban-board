@@ -27,6 +27,8 @@ export function hideModalWindow(activeModalWindow=null) {
     if (!activeModalWindow) {
         activeModalWindow = document.querySelector('.active')
     }
-    activeModalWindow.addEventListener('animationend', removeCloseAnimation);
-    activeModalWindow.classList.add('form-close-animation');
+    if (activeModalWindow) {
+        activeModalWindow.addEventListener('animationend', removeCloseAnimation);
+        activeModalWindow.classList.add('form-close-animation');
+    }
 }

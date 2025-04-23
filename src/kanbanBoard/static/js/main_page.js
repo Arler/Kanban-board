@@ -56,11 +56,12 @@ function show_new_board_form() {
 
     if (newBoardForm) {
         if (newBoardForm.classList.contains('active')) {
-            newBoardForm.classList.remove('active')
+            hideModalWindow(newBoardForm)
         }
         else if (!newBoardForm.classList.contains('active')) {
             hideModalWindow()
-            newBoardForm.classList.toggle('active')
+            newBoardForm.classList.add('active')
+            newBoardForm.classList.add('form-open-animation')
         }
     }
     else {
@@ -71,7 +72,8 @@ function show_new_board_form() {
             header.insertAdjacentHTML('afterend', sessionStorage.getItem('board-form'))
             let newBoardForm = document.querySelector(`.board-form[value="0"]`)
             setup_form_nearby_header(newBoardForm, header)
-            newBoardForm.classList.toggle('active')
+            newBoardForm.classList.add('active')
+            newBoardForm.classList.add('form-open-animation')
         })
     }
 }
@@ -83,12 +85,13 @@ function show_board_edit_form(event) {
 
     if (boardForm) {
         if (boardForm.classList.contains('active')) {
-            boardForm.classList.remove('active')
+            hideModalWindow(boardForm)
         }
         else if (!boardForm.classList.contains('active')) {
             hideModalWindow()
-            boardForm.classList.toggle('active')
             setup_form_nearby_board(boardForm, board)
+            boardForm.classList.add('active')
+            boardForm.classList.add('form-open-animation')
         }
     }
     else {
@@ -102,7 +105,8 @@ function show_board_edit_form(event) {
     
             let boardForm = document.querySelector(`.board-form[value="${board.getAttribute('id')}"]`)
             setup_form_nearby_board(boardForm, board)
-            boardForm.classList.toggle('active')
+            boardForm.classList.add('active')
+            boardForm.classList.add('form-open-animation')
         })
     }
 }

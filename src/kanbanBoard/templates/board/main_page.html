@@ -4,7 +4,10 @@
 
 {% load static %}
 
-{% block link_css %} <link rel="stylesheet" href="{% static 'css/main_page.css' %}"> {% endblock link_css %}
+{% block link_css %}
+    <link rel="stylesheet" href="{% static 'css/main_page.css' %}">
+    <link rel="stylesheet" href="{% static "css/modal_animations.css" %}">
+{% endblock link_css %}
 
 {% block action_button_content %}<button class="new-board">Создать новую доску</button>{% endblock action_button_content %}
 
