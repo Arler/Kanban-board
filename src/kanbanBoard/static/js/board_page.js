@@ -159,7 +159,7 @@ async function sendForm(event) {
         )
         .then(response => {return response.json()})
         .then(board => {
-            document.querySelector('.board__title').innerHTML = board.fields.title
+            document.querySelector('.board-title__text').innerHTML = board.fields.title
         })
         .catch(error => {console.log(error)})
     }
@@ -240,9 +240,11 @@ async function sendForm(event) {
     }
 }
 
+// Функция обработчик нажатия клавиш
 function key_handler(event) {
     if (event.code == 'Escape') {
-        document.querySelector('.active').classList.remove('active')
+        const modals = document.querySelectorAll('.active')
+        modals.forEach(modal => {hideModalWindow(modal)})
         document.querySelector('.modal-background').classList.remove('back-active')
     }
 }
@@ -294,7 +296,6 @@ function create_new_column(newColumn) {
 // Удаление задачи
 async function delete_task(event) {
     const taskId = event.target.getAttribute('value')
-
     const response = await fetch(
         `${window.location.protocol}//${window.location.host}/api/task/`,
         {
@@ -308,8 +309,10 @@ async function delete_task(event) {
     )
     if (response.ok) {
         document.querySelector(`.task[value="${taskId}"]`).remove()
-        document.querySelector('.task-description').classList.remove('active')
-        document.querySelector('.task-form').classList.remove('active')
+        const modals = document.querySelectorAll('.active')
+        modals.forEach(modal => {hideModalWindow(modal)})
+        document.querySelector('.modal-background').classList.remove('back-active')
+
     }
     else console.error(response)
 }

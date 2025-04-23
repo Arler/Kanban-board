@@ -13,8 +13,8 @@
 <body>
     <header class="header">
         <div class="header__wrapper">
-            <div class="action-button">
-                {% block action_button_content %}{% endblock action_button_content %}
+            <div class="header__content">
+                {% block header_content %}{% endblock header_content %}
             </div>
             <nav class="nav">
                 <a class="nav__link" href="{% url 'profile_page' %}">Профиль</a>

@@ -15,26 +15,26 @@
     background: #4caf50;
 
     &__wrapper {
+        height: 100%;
         display: flex;
         justify-content: space-between;
     }
-}
-
-.action-button {
-    font-family: 'Noto Sans';
-    margin: 10px 40px;
-    display: inline-block;
+    &__content {
+        margin: 0px 5px 0px 5px;
+    }
 }
 
 .nav {
-    display: inline-block;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     text-align: right;
+    width: 350px;
+    margin: 0 20px 0 0;
 
     &__link {
         color: #f5f5f5;
-        font-family: 'Noto Sans';
         font-size: 36px;
-        display: inline-block;
-        margin: 14px 40px 0 0;
+        padding-bottom: 0.2em;
     }
 }

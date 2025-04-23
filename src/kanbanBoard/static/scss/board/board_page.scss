@@ -3,7 +3,20 @@
 body {
 	background: #C8E6C9;
 }
-
+.board-title {
+	display: flex;
+	align-items: center;
+	height: 100%;
+	&__text {
+		color: #f5f5f5;
+		font-size: 30px;
+		word-break: break-all;
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		padding-bottom: 0.2em;
+	}
+}
 .container {
 	margin-top: 124px;
 	display: flex;
@@ -33,13 +46,6 @@ body {
 			&:hover {
 				cursor: pointer;
 			}
-		}
-		&__title {
-			word-break: break-all;
-			max-width: 250px;
-			display: -webkit-box;
-			-webkit-line-clamp: 1;
-			-webkit-box-orient: vertical;
 		}
 		&__settings {
 			&:hover {

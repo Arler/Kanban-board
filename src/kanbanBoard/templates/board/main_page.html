@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="{% static "css/modal_animations.css" %}">
 {% endblock link_css %}
 
-{% block action_button_content %}<button class="new-board">Создать новую доску</button>{% endblock action_button_content %}
+{% block header_content %}
+    <div class="action-button">
+        <button class="new-board">Создать новую доску</button>
+    </div>
+{% endblock header_content %}
 
 {% block content %}
     {% if boards %}
