@@ -6,13 +6,16 @@
     justify-content: space-between;
     flex-direction: column;
     width: min-content;
-    background: #f5f5f5;
+    background: #ffffff;
     padding: 10px;
     gap: 10px;
     z-index: 2;
     margin: auto auto;
+    border: 2px solid #676767;
+
     &__input-line {
         display: inline-flex;
+        border: 1px solid #676767;
         
         input {
             width: 280px;
@@ -38,12 +41,12 @@
             min-width: 150px;
             width: 150px;
             height: 52px;
-            background: #c8e6c9;
+            background: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            color: #f5f5f5;
+            color: #676767;
             font-family: "Noto Sans", sans-serif;
             font-size: 18px;
         }
@@ -57,20 +60,14 @@
         &__button-save {
             width: 430px;
             height: 50px;
-            background: #91C734;
-            border-radius: 8px;
             font-family: 'Noto Sans', 'Arial', sans-serif;
             font-size: 17px;
-            color: #ffffff;
         }
         &__button-delete {
             width: 430px;
             height: 50px;
-            background: #C76034;
-            border-radius: 8px;
             font-family: 'Noto Sans', 'Arial', sans-serif;
             font-size: 17px;
-            color: #ffffff;
         }
     }
     &__inputs-container {

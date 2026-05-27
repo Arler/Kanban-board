@@ -4,18 +4,16 @@
     width: 450px;
     height: min-content;
     z-index: 4;
-    background: #f5f5f5;
+    background: #ffffff;
+    border: 2px solid #676767;
     padding: 10px;
     margin: auto auto;
 
     &__save-column {
         width: 430px;
         height: 50px;
-        background: #91C734;
-        border-radius: 8px;
         font-family: 'Noto Sans', 'Arial', sans-serif;
         font-size: 17px;
-        color: #ffffff;
         margin-top: 10px;
     }
 
@@ -27,6 +25,7 @@
     }
     &__input-line {
         display: inline-flex;
+        border: 1px solid #676767;
         
         input {
             width: 280px;
@@ -37,12 +36,12 @@
         &__label-wrap {
             width: 150px;
             height: 52px;
-            background: #c8e6c9;
+            background: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
-            color: #f5f5f5;
+            color: #676767;
             font-family: "Noto Sans", sans-serif;
             font-size: 18px;
         }
