@@ -228,6 +228,8 @@ async function sendForm(event) {
         .catch(error => {console.log(error)})
     }
     else {
+        let body = Object.fromEntries(new FormData(form))
+        body.id = form.getAttribute('value')
         await fetch(
             `${window.location.protocol}//${window.location.host}/api/board/`,
             {
@@ -236,7 +238,7 @@ async function sendForm(event) {
                     'X-CSRFToken': getCookie('csrftoken'),
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(Object.fromEntries(new FormData(form)))
+                body: JSON.stringify(body)
             }
         )
         .then(response => {
