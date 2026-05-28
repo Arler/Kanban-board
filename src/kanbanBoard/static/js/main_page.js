@@ -1,8 +1,8 @@
 import { getCookie, hideModalWindow } from "./default.js";
 
 // Функция получения формы доски
-function get_board_form(pk, func=() => {}, event=null) {
-    fetch(
+async function get_board_form(pk, func=() => {}, event=null) {
+    await fetch(
         `${window.location.protocol}//${window.location.host}/api/forms/newboard/${pk}/`,
         {
             headers: {
@@ -112,10 +112,10 @@ function show_board_edit_form(event) {
 }
 
 // Функция для удаления доски
-function deleteBoard(event) {
+async function deleteBoard(event) {
     let board = event.target.parentElement.parentElement
     let board_id = board.getAttribute('id')
-    fetch(
+    await fetch(
         `${window.location.protocol}//${window.location.host}/api/board/`,
         {
             method: "DELETE",
@@ -170,10 +170,10 @@ function updateBoard(data) {
 }
 
 // Функция добавления новой доски на страницу
-function add_new_board(data) {
+async function add_new_board(data) {
     let container = document.querySelector('.container')
 
-    fetch(
+    await fetch(
         `${window.location.protocol}//${window.location.host}/api/elements/board/${data.pk}/`,
         {
             headers: {
@@ -201,13 +201,13 @@ function add_new_board(data) {
 }
 
 // Функция отправки формы
-function sendForm(event) {
+async function sendForm(event) {
     let form = event.target
 
     event.preventDefault()
 
     if (form.getAttribute('name') == 'new-board') {
-        fetch(
+        await fetch(
             `${window.location.protocol}//${window.location.host}/api/board/`,
             {
                 method: "POST",
@@ -228,7 +228,7 @@ function sendForm(event) {
         .catch(error => {console.log(error)})
     }
     else {
-        fetch(
+        await fetch(
             `${window.location.protocol}//${window.location.host}/api/board/`,
             {
                 method: "PUT",
